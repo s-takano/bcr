@@ -36,30 +36,28 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-/* Image styles */
-.image-fade-in {
-  opacity: 0;
-  animation: fadeIn 0.5s ease-in forwards;
-}
 
-@keyframes fadeIn {
+
+@keyframes nav-color {
   from {
-    opacity: 0;
+    color: white;
   }
   to {
-    opacity: 1;
+    color: rgb(31, 41, 55);
   }
 }
 
-/* Add this to detect when About section is in view */
-@media (min-width: 768px) {
-  main {
-    scroll-timeline: --page-scroll block;
+@keyframes flowLeft {
+  0% {
+    transform: translateX(0);
   }
-  
-  .about-section-visible {
-    animation: about-visible linear;
-    animation-timeline: --page-scroll;
-    animation-range: 80vh 100vh;
+  100% {
+    /* Adjust this value so that one complete set scrolls off */
+    transform: translateX(-50vw);
   }
+}
+
+/* Create a utility class (if not using Tailwind’s built-in animations) */
+.animate-flowLeft {
+  animation: flowLeft 60s linear infinite;
 }

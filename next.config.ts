@@ -6,9 +6,6 @@ const nextConfig: NextConfig = {
   },
   distDir: '.next',
   useFileSystemPublicRoutes: true,
-  experimental: {
-    appDir: true,
-  },
 };
 
 export default nextConfig;
