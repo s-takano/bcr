@@ -4,10 +4,12 @@ import Image from "next/image";
 import AboutSection from "@/components/About";
 import Navigation from "@/components/Navigation";
 import { useEffect, useRef, useState } from "react";
+import Contact from "@/components/Contact";
 
 export default function Home() {
   const aboutRef = useRef(null);
   const [isAboutInView, setIsAboutInView] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
     const el = aboutRef.current;
@@ -15,7 +17,8 @@ export default function Home() {
 
     const observer = new IntersectionObserver(([entry]) => {
       setIsAboutInView(entry.isIntersecting);
-    }, { threshold: 0.5 });
+      setActiveSection("about");
+    }, { threshold: 0.7 });
 
     observer.observe(el);
     return () => observer.disconnect();
@@ -27,7 +30,7 @@ export default function Home() {
   return (
     <main className="bg-white text-gray-800 font-sans relative">
       {/* Pass the navLinkClass to Navigation */}
-      <Navigation navLinkClass={navLinkClass} />
+      <Navigation navLinkClass={navLinkClass} activeSection={activeSection} />
 
       {/* Hero Section - made sticky */}
       <section className="fixed inset-0 w-full h-screen">
@@ -87,7 +90,10 @@ export default function Home() {
         <AboutSection ref={aboutRef} />
       </section>
 
-      {/* ... Additional sections ... */}
+      
+      <section className="relative z-20 bg-white">
+        <Contact />
+      </section>
     </main>
   );
 }

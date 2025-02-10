@@ -2,9 +2,10 @@ import React from "react";
 
 interface NavigationProps {
   navLinkClass: string;
+  activeSection: string | null;
 }
 
-const Navigation = ({ navLinkClass }: NavigationProps) => {
+const Navigation = ({ navLinkClass, activeSection }: NavigationProps) => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-8 py-2 sm:py-6">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -24,7 +25,7 @@ const Navigation = ({ navLinkClass }: NavigationProps) => {
           </a>
           <a
             href="#"
-            className={`nav-link ${navLinkClass} text-lg hover:opacity-80 transition-colors`}
+            className={`nav-link ${navLinkClass} text-lg hover:opacity-80 transition-colors ${activeSection === "about" ? "text-gold-600" : ""}`}
           >
             About
           </a>
