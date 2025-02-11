@@ -10,6 +10,10 @@ const Navigation = () => {
   const [opacity, setOpacity] = useState(1);
   const [windowWidth, setWindowWidth] = useState(0);
   const [hasMounted, setHasMounted] = useState(false);
+  const [textColorClass, setTextColorClass] = useState('text-white');
+  const [whiteTextOpacity, setWhiteTextOpacity] = useState(1);
+  const [goldTextOpacity, setGoldTextOpacity] = useState(0);
+  const [textColorProgress, setTextColorProgress] = useState(0);
 
   useEffect(() => {
     setHasMounted(true);
@@ -20,6 +24,29 @@ const Navigation = () => {
       setTextOffset(scrollY * 0.9);
       const newOpacity = Math.max(0, 1 - (scrollY / 500));
       setOpacity(newOpacity);
+
+      const colorChangeStart = 100;
+      const colorChangeEnd = 300;
+      
+      if (scrollY > colorChangeStart) {
+        const progress = Math.min((scrollY - colorChangeStart) / (colorChangeEnd - colorChangeStart), 1);
+        setWhiteTextOpacity(1 - progress);
+        setGoldTextOpacity(progress);
+      } else {
+        setWhiteTextOpacity(1);
+        setGoldTextOpacity(0);
+      }
+
+      const moveComplete = scrollY >= 500; // When logo reaches target position
+      
+      if (moveComplete) {
+        const colorChangeStart = 500;  // Start when logo reaches target
+        const colorChangeEnd = 700;    // End of color transition
+        const progress = Math.min((scrollY - colorChangeStart) / (colorChangeEnd - colorChangeStart), 1);
+        setTextColorProgress(progress);
+      } else {
+        setTextColorProgress(0);
+      }
     };
 
     const handleResize = () => {
@@ -209,13 +236,22 @@ const Navigation = () => {
         style={{
           left: `${scaledOffset.left}px`,
           top: `${scaledOffset.top}px`,
-          transform: `scale(${scaledOffset.scale})`,
-          transition: 'all 0.1s ease-out'
+          transform: `scale(${scaledOffset.scale})`
         }}
       >
         
-        <div className="flex flex-col items-center justify-center text-gold-600 font-light mx-auto">
-          {/* BEAUTY CELLAR with gradient */}
+        <div 
+          className="flex flex-col items-center justify-center mx-auto font-light"
+          style={{
+            color: `rgb(
+              ${255 - (255 - 234) * textColorProgress}, 
+              ${255 - (255 - 179) * textColorProgress}, 
+              ${255 - (255 - 8) * textColorProgress}
+            )`,
+            transition: 'color 0.3s ease-out'
+          }}
+        >
+          {/* BEAUTY CELLAR */}
           <div className="relative">
             <span className="relative inline-block">
               <div
@@ -237,13 +273,13 @@ const Navigation = () => {
           </div>
 
           
-          {/* BY HOLLYWOOD with gradient */}
+          {/* BY HOLLYWOOD */}
           <div className="relative">
             <div className="text-sm sm:text-base">BY HOLLYWOOD</div>
           </div>
         </div>
 
-        <p className="text-white text-base sm:text-1xl font-extralight tracking-wide leading-relaxed max-w-md mb-8 text-center"
+        <p className="text-[#FFD700] text-base sm:text-1xl font-extralight tracking-wide leading-relaxed max-w-md my-2 text-center"
           style={{
             opacity: opacity,
             transition: 'opacity 0.1s ease-out'
