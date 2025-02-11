@@ -87,36 +87,34 @@ const Navigation = () => {
   const desktopLinkClass = sections[activeSectionKey].desktopLinkClass;
   const mobileLinkClass = sections[activeSectionKey].mobileLinkClass;
 
-  const getActiveLinkClass = (section: Section) => {
-//    console.log(activeSection, section.link.replace('#', ''));
-    if (activeSection === section.link.replace('#', '') ) {
-      return "text-gold-600";
-    }
-    else {
-      return desktopLinkClass;
-    }
+  const getActiveLinkClass = (section: any) => {
+    return activeSection === section.link.replace('#', '') ? "text-gold-600" : "";
   }
 
   const calculateScaledOffset = (textOffset: number) => {
     // Use windowWidth state instead of checking window directly
     const isDesktop = windowWidth >= 768;
-
+    
+    // Calculate positions based on screen height
+    const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const verticalMiddle = screenHeight / 2;
+    
     const desktopStart = {
       left: 140,
-      top: 300,
+      top: verticalMiddle - 100, // Adjust 100 based on logo height
       scale: 1.9
+    };
+
+    const mobileStart = {
+      left: 70,
+      top: verticalMiddle - 80, // Adjust 80 for mobile logo height
+      scale: 1.5
     };
 
     const desktopTarget = {
       left: 0,
       top: 0,
       scale: 1
-    };
-
-    const mobileStart = {
-      left: 70,
-      top: 250,
-      scale: 1.5
     };
 
     const mobileTarget = {
@@ -139,17 +137,15 @@ const Navigation = () => {
   };
 
   const scaledOffset = calculateScaledOffset(textOffset);
+  const gradientVisible = textOffset < 50;
   
   return (
     <div className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-8 py-2 sm:py-6 overflow-visible">
-
-
       <div className="max-w-7xl mx-auto flex justify-end items-center overflow-visible">
-
+        
 
         {/* Logo - always gold */}
-        <div className={`absolute px-3 sm:px-10 py-5 sm:py-10 
-          `}
+        <div className={`absolute px-3 sm:px-10 py-5 sm:py-10`}
           style={{
             left: `${scaledOffset.left}px`,
             top: `${scaledOffset.top}px`,
@@ -157,18 +153,50 @@ const Navigation = () => {
             transition: 'all 0.1s ease-out'
           }}
         >
-
+          
           <div className="flex flex-col items-center text-gold-600 font-light mr-10">
-            <div className="text-3xl sm:text-4xl">BEAUTY CELLAR</div> 
-            <div className="text-sm sm:text-base">BY HOLLYWOOD</div> 
+            {/* BEAUTY CELLAR with gradient */}
+            <div className="relative">
+              <div className={`absolute left-0 top-0 w-[240px] h-[40px] pointer-events-none z-[-1] 
+                ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
+                transition-opacity duration-500 ease-in-out`}
+                style={{
+                  background: "radial-gradient(ellipse at 40% 50%, rgba(0, 0, 0, 0.4) 30%, transparent 70%)",
+                }}
+              />
+              <div className="text-3xl sm:text-4xl relative">BEAUTY CELLAR</div>
+            </div>
+
+            {/* BY HOLLYWOOD with gradient */}
+            <div className="relative">
+              <div className={`absolute left-0 top-0 w-[110px] h-[30px] pointer-events-none z-[-1]
+                ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
+                transition-opacity duration-500 ease-in-out`}
+                style={{
+                  background: "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.3) 30%, transparent 70%",
+                }}
+              />
+              <div className="text-sm sm:text-base">BY HOLLYWOOD</div>
+            </div>
           </div>
-          <p className="text-white text-base md:text-1xl font-extralight tracking-wide leading-relaxed max-w-md mb-8"
-            style={{
-              opacity: opacity,
-              transition: 'opacity 0.1s ease-out'
-            }}>
+
+          {/* Tagline with gradient */}
+          <div className="relative">
+            <div className={`absolute left-0 top-0 w-[240px] h-[25px] pointer-events-none z-[-1] 
+              ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
+              transition-opacity duration-500 ease-in-out`}
+              style={{
+                background: "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.4) 30%, transparent 70%)",
+              }}
+          />
+            <p className="text-white text-base md:text-1xl font-extralight tracking-wide leading-relaxed max-w-md mb-8"
+              style={{
+                opacity: opacity,
+                transition: 'opacity 0.1s ease-out'
+              }}>
               Elevate Beauty, Timeless&nbsp;Elegance
-          </p>
+            </p>
+          </div>
         </div>
 
         {/* Desktop Navigation Container - align everything to right */}

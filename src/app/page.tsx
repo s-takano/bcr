@@ -33,7 +33,7 @@ export default function Home() {
       {/* Hero Section - made sticky */}
       <section data-section="home" className="fixed inset-0 w-full h-screen">
         {/* Background image */}
-        <div className="absolute inset-0 transform translate-x-32 md:translate-x-64 -ml-64">
+        <div className="absolute inset-0 transform translate-x-48 md:translate-x-64 -ml-64">
           <Image
             src="/images/hero-model1.jpg"
             alt="Model with manicure"
@@ -46,16 +46,6 @@ export default function Home() {
             }}
           />
         </div>
-
-        {/* Radial gradient overlay */}
-        <div  
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(circle at 20% 40%, rgba(0, 0, 0, 0.6), transparent 50%)"
-          }}
-        ></div>
-        
       </section>
 
       {/* Spacer to push content below hero height */}
