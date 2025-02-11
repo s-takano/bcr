@@ -91,49 +91,108 @@ const Navigation = () => {
   const getActiveLinkClass = (section: Section) => {
     return activeSection === section.link.replace('#', '') ? "text-gold-600" : "";
   }
+  
+  type Breakpoint = "large" | "medium" | "small" | "tiny";
 
-  const calculateScaledOffset = (textOffset: number) => {
-    // Use windowWidth state instead of checking window directly
-    const isDesktop = windowWidth >= 768;
-    
+  const getBreakpoint = (): Breakpoint => {
+    if (windowWidth >= 1024) {
+      return "large";
+    }
+    else if (windowWidth >= 768) {
+      return "medium";
+    }
+    else if (windowWidth >= 640) {
+      return "small";
+    }
+    else {
+      return "tiny";
+    }
+  }
+
+  
+  type LogoDimension = {
+    start: {
+      left: number;
+      top: number;
+      scale: number;
+    };
+    target: {
+      left: number;
+      top: number;
+      scale: number;
+    };
+  }
+
+  const calculateScaledOffset = (textOffset: number) => {    
     // Calculate positions based on screen height
     const screenHeight = hasMounted ? (typeof window !== 'undefined' ? window.innerHeight : 800) : 800;
+    const screenWidth = hasMounted ? (typeof window !== 'undefined' ? window.innerWidth : 1024) : 1024;
     const verticalMiddle = screenHeight / 2;
-    
-    const desktopStart = {
-      left: 140,
-      top: verticalMiddle - 100, // Adjust 100 based on logo height
-      scale: 1.9
-    };
+    const horizontalMiddle = screenWidth / 2;
 
-    const mobileStart = {
-      left: 70,
-      top: verticalMiddle - 80, // Adjust 80 for mobile logo height
-      scale: 1.5
-    };
+    const breakpoint = getBreakpoint();
+//    console.log(breakpoint);
 
-    const desktopTarget = {
-      left: 0,
-      top: 0,
-      scale: 1
-    };
-
-    const mobileTarget = {
-      left: 0,
-      top: 0,
-      scale: 0.8
-    };
-
-    // Use desktop values as initial state for server-side rendering
-    const startValues = windowWidth === 0 ? desktopStart : (isDesktop ? desktopStart : mobileStart);
-    const targetValues = windowWidth === 0 ? desktopTarget : (isDesktop ? desktopTarget : mobileTarget);
+    const logoDimensions: Record<Breakpoint, LogoDimension> = {
+      large: {
+        start: {
+          left: horizontalMiddle - 200,
+          top: verticalMiddle - 100, // Adjust 100 based on logo height
+          scale: 1.9
+        },
+        target: {
+          left: 20,
+          top: 30,
+          scale: 1
+        }
+      },
+      medium: {
+        start: {
+          left: horizontalMiddle - 160,
+          top: verticalMiddle - 60, // Adjust 80 for mobile logo height
+          scale: 1.5
+        },
+        target: {
+          left: 5,
+          top: 20,
+          scale: 0.8
+        }
+      },
+      small: {
+        start: {
+          left: horizontalMiddle - 140,
+          top: verticalMiddle - 40, // Adjust 80 for mobile logo height
+          scale: 1.5
+        },
+        target: {
+          left: 5,
+          top: 15,
+          scale: 0.8
+        }
+      },
+      tiny: {
+        start: {
+          left: horizontalMiddle - 120,
+          top: verticalMiddle - 80, // Adjust 80 for mobile logo height
+          scale: 1.5
+        },
+        target: {
+          left: -3,
+          top: -3,
+          scale: 0.8
+        }
+      }
+    }
 
     const progress = Math.min(textOffset / 500, 1);
 
+    const dimension = logoDimensions[breakpoint];
+//    console.log(dimension);
+
     return {
-      left: startValues.left + (targetValues.left - startValues.left) * progress,
-      top: startValues.top + (targetValues.top - startValues.top) * progress,
-      scale: startValues.scale + (targetValues.scale - startValues.scale) * progress
+      left: dimension.start.left + (dimension.target.left - dimension.start.left) * progress,
+      top: dimension.start.top + (dimension.target.top - dimension.start.top) * progress,
+      scale: dimension.start.scale + (dimension.target.scale - dimension.start.scale) * progress
     };
   };
 
@@ -141,68 +200,69 @@ const Navigation = () => {
   const gradientVisible = textOffset < 50;
   
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-8 py-2 sm:py-6 overflow-visible">
-      <div className="max-w-7xl mx-auto flex justify-end items-center overflow-visible">
+    <div className="items-center max-w-7xl mx-auto fixed top-0 left-0 right-0 z-50 
+      px-3 sm:px-8 py-2 sm:py-4 md:py-6 
+      overflow-visible">
+
+      {/* Logo */}
+      <div className={`absolute w-fit`}
+        style={{
+          left: `${scaledOffset.left}px`,
+          top: `${scaledOffset.top}px`,
+          transform: `scale(${scaledOffset.scale})`,
+          transition: 'all 0.1s ease-out'
+        }}
+      >
         
-
-        {/* Logo - always gold */}
-        <div className={`absolute px-1 sm:px-6 py-1 sm:py-6`}
-          style={{
-            left: `${scaledOffset.left}px`,
-            top: `${scaledOffset.top}px`,
-            transform: `scale(${scaledOffset.scale})`,
-            transition: 'all 0.1s ease-out'
-          }}
-        >
-          
-          <div className="flex flex-col items-center text-gold-600 font-light mr-10">
-            {/* BEAUTY CELLAR with gradient */}
-            <div className="relative">
-              <span className="relative inline-block">
-                <div
-                  className={`absolute pointer-events-none z-[-1]
-                    ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
-                    transition-opacity duration-500 ease-in-out`}
-                  style={{
-                    background:
-                      "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.4) 10%, transparent 70%)",
-                    top: '-100px',
-                    left: '-100px',
-                    width: '250px',
-                    height: '250px'
-                  }}
-                />
-                <span className="text-3xl sm:text-4xl">BEAUTY</span>
-              </span>
-              <span className="text-3xl sm:text-4xl relative">CELLAR</span>
-            </div>
-
-            
-            {/* BY HOLLYWOOD with gradient */}
-            <div className="relative">
-              <div className="text-sm sm:text-base">BY HOLLYWOOD</div>
-            </div>
+        <div className="flex flex-col items-center justify-center text-gold-600 font-light mx-auto">
+          {/* BEAUTY CELLAR with gradient */}
+          <div className="relative">
+            <span className="relative inline-block">
+              <div
+                className={`absolute pointer-events-none z-[-1]
+                  ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
+                  transition-opacity duration-500 ease-in-out`}
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.4) 10%, transparent 70%)",
+                  top: '-100px',
+                  left: '-100px',
+                  width: '250px',
+                  height: '250px'
+                }}
+              />
+              <span className="text-4xl sm:text-5xl">BEAUTY</span>
+            </span>
+            <span className="text-4xl sm:text-5xl relative">CELLAR</span>
           </div>
 
-
-          <p className="text-white text-base md:text-1xl font-extralight tracking-wide leading-relaxed max-w-md mb-8"
-            style={{
-              opacity: opacity,
-              transition: 'opacity 0.1s ease-out'
-            }}>
-            Elevate Beauty, Timeless&nbsp;Elegance
-          </p>
+          
+          {/* BY HOLLYWOOD with gradient */}
+          <div className="relative">
+            <div className="text-sm sm:text-base">BY HOLLYWOOD</div>
+          </div>
         </div>
 
+        <p className="text-white text-base sm:text-1xl font-extralight tracking-wide leading-relaxed max-w-md mb-8 text-center"
+          style={{
+            opacity: opacity,
+            transition: 'opacity 0.1s ease-out'
+          }}>
+          Elevate Beauty, Timeless&nbsp;Elegance
+        </p>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex justify-end">
         {/* Desktop Navigation Container - align everything to right */}
-        <div className="flex items-center justify-end space-x-5 p-1 sm:p-6">
+        <div className="flex items-center justify-end space-x-5">
           {/* Navigation Links */}
-          <ul className="flex space-x-4 md:space-x-8">
+          <ul className="hidden md:inline-flex space-x-4 md:space-x-4 lg:space-x-6">
             {Object.values(sections).map((section) => (
               <li key={section.link}>
                 <a
                   href={section.link}
-                  className={`hidden md:block nav-link text-base sm:text-lg hover:opacity-80 transition-colors 
+                  className={`nav-link text-base sm:text-lg hover:opacity-80 transition-colors 
                     duration-300 hover:scale-110 transition-all
                     ${getActiveLinkClass(section)}`}
                 >
@@ -214,7 +274,9 @@ const Navigation = () => {
 
           {/* CTA Button */}
           <button className="text-gold-600 bg-black/20 border border-gold-600 
-                    px-2 sm:px-6 py-1 sm:py-4 text-base md:text-lg whitespace-nowrap
+                    px-2 sm:px-6 py-1 sm:py-4 
+                    text-base md:text-lg 
+                    whitespace-nowrap
                     hover:bg-gold-600/90 hover:scale-110
                     focus:outline-none hover:ring-1 hover:ring-gold-600 hover:ring-offset-1 hover:ring-offset-transparent
                     transition-all duration-300 font-semibold">
