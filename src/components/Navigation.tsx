@@ -9,9 +9,11 @@ const Navigation = () => {
   const [textOffset, setTextOffset] = useState(0);
   const [opacity, setOpacity] = useState(1);
   const [windowWidth, setWindowWidth] = useState(0);
-
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
+    setHasMounted(true);
+
     const handleScroll = () => {
       const scrollY = window.scrollY;
       //const newScale = 1 + (scrollY * 0.00025); // Adjust 0.001 to control zoom speed
@@ -96,7 +98,7 @@ const Navigation = () => {
     const isDesktop = windowWidth >= 768;
     
     // Calculate positions based on screen height
-    const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const screenHeight = hasMounted ? (typeof window !== 'undefined' ? window.innerHeight : 800) : 800;
     const verticalMiddle = screenHeight / 2;
     
     const desktopStart = {
@@ -157,46 +159,40 @@ const Navigation = () => {
           <div className="flex flex-col items-center text-gold-600 font-light mr-10">
             {/* BEAUTY CELLAR with gradient */}
             <div className="relative">
-              <div className={`absolute left-0 top-0 w-[240px] h-[40px] pointer-events-none z-[-1] 
-                ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
-                transition-opacity duration-500 ease-in-out`}
-                style={{
-                  background: "radial-gradient(ellipse at 40% 50%, rgba(0, 0, 0, 0.4) 30%, transparent 70%)",
-                }}
-              />
-              <div className="text-3xl sm:text-4xl relative">BEAUTY CELLAR</div>
+              <span className="relative inline-block">
+                <div
+                  className={`absolute pointer-events-none z-[-1]
+                    ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
+                    transition-opacity duration-500 ease-in-out`}
+                  style={{
+                    background:
+                      "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.4) 10%, transparent 70%)",
+                    top: '-100px',
+                    left: '-100px',
+                    width: '250px',
+                    height: '250px'
+                  }}
+                />
+                <span className="text-3xl sm:text-4xl">BEAUTY</span>
+              </span>
+              <span className="text-3xl sm:text-4xl relative">CELLAR</span>
             </div>
 
+            
             {/* BY HOLLYWOOD with gradient */}
             <div className="relative">
-              <div className={`absolute left-0 top-0 w-[110px] h-[30px] pointer-events-none z-[-1]
-                ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
-                transition-opacity duration-500 ease-in-out`}
-                style={{
-                  background: "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.3) 30%, transparent 70%",
-                }}
-              />
               <div className="text-sm sm:text-base">BY HOLLYWOOD</div>
             </div>
           </div>
 
-          {/* Tagline with gradient */}
-          <div className="relative">
-            <div className={`absolute left-0 top-0 w-[240px] h-[25px] pointer-events-none z-[-1] 
-              ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
-              transition-opacity duration-500 ease-in-out`}
-              style={{
-                background: "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.4) 30%, transparent 70%)",
-              }}
-          />
-            <p className="text-white text-base md:text-1xl font-extralight tracking-wide leading-relaxed max-w-md mb-8"
-              style={{
-                opacity: opacity,
-                transition: 'opacity 0.1s ease-out'
-              }}>
-              Elevate Beauty, Timeless&nbsp;Elegance
-            </p>
-          </div>
+
+          <p className="text-white text-base md:text-1xl font-extralight tracking-wide leading-relaxed max-w-md mb-8"
+            style={{
+              opacity: opacity,
+              transition: 'opacity 0.1s ease-out'
+            }}>
+            Elevate Beauty, Timeless&nbsp;Elegance
+          </p>
         </div>
 
         {/* Desktop Navigation Container - align everything to right */}
