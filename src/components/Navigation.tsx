@@ -146,7 +146,7 @@ const Navigation = () => {
         
 
         {/* Logo - always gold */}
-        <div className={`absolute px-3 sm:px-10 py-5 sm:py-10`}
+        <div className={`absolute px-1 sm:px-6 py-1 sm:py-6`}
           style={{
             left: `${scaledOffset.left}px`,
             top: `${scaledOffset.top}px`,
@@ -195,7 +195,7 @@ const Navigation = () => {
         </div>
 
         {/* Desktop Navigation Container - align everything to right */}
-        <div className="flex items-center justify-end space-x-5 p-6">
+        <div className="flex items-center justify-end space-x-5 p-1 sm:p-6">
           {/* Navigation Links */}
           <ul className="flex space-x-4 md:space-x-8">
             {Object.values(sections).map((section) => (
@@ -214,7 +214,7 @@ const Navigation = () => {
 
           {/* CTA Button */}
           <button className="text-gold-600 bg-black/20 border border-gold-600 
-                    px-6 py-4 text-base md:text-lg whitespace-nowrap
+                    px-2 sm:px-6 py-1 sm:py-4 text-base md:text-lg whitespace-nowrap
                     hover:bg-gold-600/90 hover:scale-110
                     focus:outline-none hover:ring-1 hover:ring-gold-600 hover:ring-offset-1 hover:ring-offset-transparent
                     transition-all duration-300 font-semibold">

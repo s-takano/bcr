@@ -70,7 +70,7 @@ const ServicesSection = (() => {
             </div>
           </div>
 
-          {/* --- Row 2: Nail & Kimono Dressing --- */}
+          {/* --- Row 2: Nail & Kimono --- */}
           <div className="grid grid-cols-1 md:grid-cols-2 h-[60vh] md:h-[70vh]">
             {/* Nail */}
             <div className="relative w-full h-full overflow-hidden group">
@@ -100,11 +100,11 @@ const ServicesSection = (() => {
               </div>
             </div>
 
-            {/* Kimono Dressing */}
+            {/* Kimono */}
             <div className="relative w-full h-full overflow-hidden group">
               <Image
                 src="/images/service-kimono.jpg"
-                alt="Kimono Dressing"
+                alt="Kimono"
                 width={1000}
                 height={1000}
                 className="object-cover object-center transition-transform -translate-y-10 md:translate-y-0 duration-300 group-hover:scale-105"
@@ -115,7 +115,7 @@ const ServicesSection = (() => {
               {/* Overlay Text */}
               <div className="absolute bottom-0 left-0 p-4 md:p-8 text-white">
                 <h3 className="text-4xl md:text-5xl mb-2">
-                  Kimono Dressing
+                  Kimono
                 </h3>
                 <p className="text-sm md:text-base mb-4 max-w-sm">
                   Experience timeless Japanese elegance with our expert kimono 
