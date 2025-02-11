@@ -33,7 +33,7 @@ export default function Home() {
       {/* Hero Section - made sticky */}
       <section data-section="home" className="fixed inset-0 w-full h-screen">
         {/* Background image */}
-        <div className="absolute inset-0 transform translate-x-64 -ml-64">
+        <div className="absolute inset-0 transform translate-x-32 md:translate-x-64 -ml-64">
           <Image
             src="/images/hero-model1.jpg"
             alt="Model with manicure"
