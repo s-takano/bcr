@@ -10,9 +10,6 @@ const Navigation = () => {
   const [opacity, setOpacity] = useState(1);
   const [windowWidth, setWindowWidth] = useState(0);
   const [hasMounted, setHasMounted] = useState(false);
-  const [textColorClass, setTextColorClass] = useState('text-white');
-  const [whiteTextOpacity, setWhiteTextOpacity] = useState(1);
-  const [goldTextOpacity, setGoldTextOpacity] = useState(0);
   const [textColorProgress, setTextColorProgress] = useState(0);
 
   useEffect(() => {
@@ -25,18 +22,7 @@ const Navigation = () => {
       const newOpacity = Math.max(0, 1 - (scrollY / 500));
       setOpacity(newOpacity);
 
-      const colorChangeStart = 100;
-      const colorChangeEnd = 300;
       
-      if (scrollY > colorChangeStart) {
-        const progress = Math.min((scrollY - colorChangeStart) / (colorChangeEnd - colorChangeStart), 1);
-        setWhiteTextOpacity(1 - progress);
-        setGoldTextOpacity(progress);
-      } else {
-        setWhiteTextOpacity(1);
-        setGoldTextOpacity(0);
-      }
-
       const moveComplete = scrollY >= 500; // When logo reaches target position
       
       if (moveComplete) {
