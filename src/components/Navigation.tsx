@@ -86,10 +86,9 @@ const Navigation = () => {
   };
 
   const activeSectionKey = activeSection as keyof typeof sections || 'home';
-  const desktopLinkClass = sections[activeSectionKey].desktopLinkClass;
   const mobileLinkClass = sections[activeSectionKey].mobileLinkClass;
 
-  const getActiveLinkClass = (section: any) => {
+  const getActiveLinkClass = (section: Section) => {
     return activeSection === section.link.replace('#', '') ? "text-gold-600" : "";
   }
 
