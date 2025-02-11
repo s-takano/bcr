@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useRef } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 
-export default function Contact() {
+const Contact = (() => {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -76,11 +76,6 @@ export default function Contact() {
     <section className="relative h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-20 mb-10"/>
-        <div className="text-center text-2xl md:text-3xl mb-10 font-light">
-          Contact Us
-        </div>
-
-
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Contact Information */}
@@ -129,4 +124,6 @@ export default function Contact() {
       </div>
     </section>
   );
-}
+});
+
+export default Contact;

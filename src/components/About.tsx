@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { forwardRef } from "react";
 
 const images = [
   {
@@ -28,9 +27,9 @@ const images = [
   },
 ];
 
-const AboutSection = forwardRef<HTMLDivElement>((props, ref) => {
+const AboutSection = (() => {
   return (
-    <div className="relative h-screen" ref={ref}>
+    <div className="relative h-screen">
       {/* Background flowing images container */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="h-[45%] sm:h-1/4" />
@@ -62,7 +61,7 @@ const AboutSection = forwardRef<HTMLDivElement>((props, ref) => {
       <div className="absolute inset-0 flex h-[300px] sm:h-full my-10 sm:my-0">
         <div className="flex-1 hidden sd:block sm:block" />
         {/* Remove skew and make full width on mobile */}
-        <div className="w-full sm:w-5/12 bg-white sm:transform sm:-skew-x-12 relative overflow-hidden">
+        <div className="w-full sm:w-5/12 bg-white/90 sm:transform sm:-skew-x-12 relative overflow-hidden">
           <div className="absolute inset-0 flex items-center justify-center sm:skew-x-12">
 
             <div className="text-center w-full sm:w-[80%] h-full max-w-2xl px-4 py-20
@@ -70,13 +69,15 @@ const AboutSection = forwardRef<HTMLDivElement>((props, ref) => {
 
 
 
-              <h2 className="text-xl sm:text-2xl md:text-2xl my-2 sm:my-10">
+              <h2 className="text-xl sm:text-2xl md:text-3xl my-2 sm:my-10">
                 ABOUT US
               </h2>
-              <p className="text-xl sm:text-2xl md:text-3xl mb-2 font-semibold">
+              <div className="text-xl sm:text-2xl md:text-3xl mb-2">
                 Where Tradition Meets Modern Beauty in{" "}
-                <strong className="font-bold">Roppongi Hills</strong>
-              </p>
+                <div className="py-1" />
+                <strong>Roppongi Hills</strong>
+              </div>
+              <div className="py-3" />
               <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed mb-6">
                 With the warmth of Japanese hospitality, BEAUTY CELLAR BY
                 HOLLYWOOD offers a complete salon experience—from hair and

@@ -5,43 +5,45 @@ import AboutSection from "@/components/About";
 import Navigation from "@/components/Navigation";
 import { useEffect, useRef, useState } from "react";
 import Contact from "@/components/Contact";
+import ServicesSection from "@/components/ServicesSection";
 
 export default function Home() {
-  const aboutRef = useRef(null);
-  const [isAboutInView, setIsAboutInView] = useState(false);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    const el = aboutRef.current;
-    if (!el) return;
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const newScale = 1 + (scrollY * 0.00025); // Adjust 0.001 to control zoom speed
+      const limitedScale = Math.min(newScale, 1.3); // Max 1.3x zoom
+      setScale(limitedScale);
+    };
 
-    const observer = new IntersectionObserver(([entry]) => {
-      setIsAboutInView(entry.isIntersecting);
-      setActiveSection("about");
-    }, { threshold: 0.7 });
-
-    observer.observe(el);
-    return () => observer.disconnect();
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Decide navigation link class based on `isAboutInView`
-  const navLinkClass = isAboutInView ? "text-black hover:text-gray-400" : "text-white hover:text-gray-400";
+  //const navLinkClass = isAboutInView || isContactInView ? "text-black hover:text-gray-400" : "text-white hover:text-gray-400";
 
   return (
     <main className="bg-white text-gray-800 font-sans relative">
       {/* Pass the navLinkClass to Navigation */}
-      <Navigation navLinkClass={navLinkClass} activeSection={activeSection} />
+      <Navigation />
 
       {/* Hero Section - made sticky */}
-      <section className="fixed inset-0 w-full h-screen">
+      <section data-section="home" className="fixed inset-0 w-full h-screen">
         {/* Background image */}
         <div className="absolute inset-0 transform translate-x-64 -ml-64">
           <Image
             src="/images/hero-model1.jpg"
             alt="Model with manicure"
             fill
-            className="object-cover object-[50%_20%]"
+            className="object-cover object-[50%_20%] transition-transform duration-100"
             priority
+            style={{
+              transform: `scale(${scale})`,
+              transformOrigin: 'center center'
+            }}
           />
         </div>
 
@@ -50,48 +52,28 @@ export default function Home() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 0.5), transparent 70%)"
+              "radial-gradient(circle at 20% 40%, rgba(0, 0, 0, 0.6), transparent 50%)"
           }}
         ></div>
         
-        {/* White text overlay */}
-        <div className="relative z-10 flex flex-col justify-center h-full px-12 md:px-16">
-          <div className="max-w-2xl">
-            {/* Main Hero Headline */}
-            <h1 className="text-white text-4xl md:text-6xl lg:text-7xl leading-none mb-2 sm:mb-4 max-w-md">
-              Elevate Beauty,
-              <br />
-              Timeless&nbsp;Elegance
-            </h1>
-
-            {/* Sub-Heading */}
-            <p className="text-white text-lg md:text-xl font-extralight tracking-wide leading-relaxed max-w-md mb-8">
-              Where time-honored expertise meets
-              <br className="hidden md:block" />
-              modern beauty artistry in <strong className="font-bold text-lg">Roppongi Hills</strong>
-            </p>
-
-
-            {/* CTA */}
-            <button className="text-gold-600 bg-black/20 border border-gold-600 
-                             px-10 py-4 text-base md:text-lg 
-                             hover:bg-gold-600 hover:text-gray-900 transition-colors font-semibold">
-              Book Now
-            </button>
-          </div>
-        </div>
       </section>
 
       {/* Spacer to push content below hero height */}
       <div className="h-screen"></div>
 
-      {/* About Section - will slide over hero */}
-      <section className="relative z-20 bg-white">
-        <AboutSection ref={aboutRef} />
+
+      {/* Services Section - will slide over hero */}
+      <section data-section="services" className="relative z-20 bg-white">
+        <ServicesSection />
       </section>
 
-      
-      <section className="relative z-20 bg-white">
+      {/* About Section - will slide over hero */}
+      <section data-section="about" className="relative z-20 bg-white">
+        <AboutSection />
+      </section>
+
+      {/* Contact Section - will slide over hero */}
+      <section data-section="contact" className="relative z-20 bg-white">
         <Contact />
       </section>
     </main>

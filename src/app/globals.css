@@ -14,7 +14,7 @@
 }
 
 body {
-  font-family: 'kinto-sans', sans-serif;
+  font-family: 'utile-display', sans-serif;
   font-feature-settings: "palt" 1;
   @apply bg-white text-gray-900;
 }
