@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 
 const Navigation = () => {
@@ -6,19 +8,24 @@ const Navigation = () => {
 //  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [textOffset, setTextOffset] = useState(0);
   const [opacity, setOpacity] = useState(1);
+  const [windowWidth, setWindowWidth] = useState(0);
 
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       //const newScale = 1 + (scrollY * 0.00025); // Adjust 0.001 to control zoom speed
-      setTextOffset(scrollY * 0.8);
+      setTextOffset(scrollY * 0.9);
       const newOpacity = Math.max(0, 1 - (scrollY / 500));
       setOpacity(newOpacity);
     };
 
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
     window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -51,10 +58,13 @@ const Navigation = () => {
     
     sections.forEach((section) => observer.observe(section));
 
+    // Set window width after component mounts
+    setWindowWidth(window.innerWidth);
 
     return () => {
       observer.disconnect();
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
     }
   }, []);
 
@@ -88,25 +98,43 @@ const Navigation = () => {
   }
 
   const calculateScaledOffset = (textOffset: number) => {
-    // Starting values
-    const startLeft = 140;
-    const startTop = 300;
-    const startScale = 1.9;
+    // Use windowWidth state instead of checking window directly
+    const isDesktop = windowWidth >= 768;
 
+    const desktopStart = {
+      left: 140,
+      top: 300,
+      scale: 1.9
+    };
 
-    // Target values
-    const targetLeft = 0;
-    const targetTop = 0;
-    const targetScale = 1;
+    const desktopTarget = {
+      left: 0,
+      top: 0,
+      scale: 1
+    };
 
-    // Calculate progress (0 to 1)
+    const mobileStart = {
+      left: 70,
+      top: 250,
+      scale: 1.5
+    };
+
+    const mobileTarget = {
+      left: 0,
+      top: 0,
+      scale: 0.8
+    };
+
+    // Use desktop values as initial state for server-side rendering
+    const startValues = windowWidth === 0 ? desktopStart : (isDesktop ? desktopStart : mobileStart);
+    const targetValues = windowWidth === 0 ? desktopTarget : (isDesktop ? desktopTarget : mobileTarget);
+
     const progress = Math.min(textOffset / 500, 1);
 
-    // Interpolate values
     return {
-      left: startLeft + (targetLeft - startLeft) * progress,
-      top: startTop + (targetTop - startTop) * progress,
-      scale: startScale + (targetScale - startScale) * progress
+      left: startValues.left + (targetValues.left - startValues.left) * progress,
+      top: startValues.top + (targetValues.top - startValues.top) * progress,
+      scale: startValues.scale + (targetValues.scale - startValues.scale) * progress
     };
   };
 
