@@ -14,7 +14,6 @@ const Contact = (() => {
       });
 
       const { Map } = await loader.importLibrary('maps');
-      const placesLib = await loader.importLibrary('places') as google.maps.PlacesLibrary;
       const placesService = new google.maps.places.PlacesService(document.createElement('div'));
       
       // Use Place ID instead of coordinates

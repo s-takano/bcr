@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-interface NavigationProps {
-  
-}
-
-const Navigation = ({ }: NavigationProps) => {
+const Navigation = () => {
 
   const [activeSection, setActiveSection] = useState<string | null>('home');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+//  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [textOffset, setTextOffset] = useState(0);
   const [opacity, setOpacity] = useState(1);
 
@@ -82,12 +78,6 @@ const Navigation = ({ }: NavigationProps) => {
     else {
       return desktopLinkClass;
     }
-  }
-
-  const initialTextOffsets = {
-    left: 140,
-    top: 300,
-    scale: 190
   }
 
   const calculateScaledOffset = (textOffset: number) => {
