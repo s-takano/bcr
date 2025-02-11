@@ -58,7 +58,14 @@ const Navigation = () => {
     }
   }, []);
 
-  const sections = {
+  type Section = {
+    name: string;
+    link: string;
+    desktopLinkClass: string;
+    mobileLinkClass: string;
+  }
+
+  const sections: Record<string, Section> = {
     home: {name: 'Home', link: '#home', desktopLinkClass: 'text-white hover:text-gray-400', mobileLinkClass: 'text-white hover:text-gray-400'}, 
     services: {name: 'Services', link: '#services', desktopLinkClass: 'text-white hover:text-gray-400', mobileLinkClass: 'text-white hover:text-gray-400'}, 
     about: {name: 'About', link: '#about', desktopLinkClass: 'text-black hover:text-gray-400', mobileLinkClass: 'text-black hover:text-gray-400'}, 
@@ -70,7 +77,7 @@ const Navigation = () => {
   const desktopLinkClass = sections[activeSectionKey].desktopLinkClass;
   const mobileLinkClass = sections[activeSectionKey].mobileLinkClass;
 
-  const getActiveLinkClass = (section: any) => {
+  const getActiveLinkClass = (section: Section) => {
 //    console.log(activeSection, section.link.replace('#', ''));
     if (activeSection === section.link.replace('#', '') ) {
       return "text-gold-600";

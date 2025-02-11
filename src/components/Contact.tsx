@@ -11,60 +11,53 @@ const Contact = (() => {
       const loader = new Loader({
         apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
         version: 'weekly',
+        libraries: ['places']
       });
 
-      const { Map } = await loader.importLibrary('maps');
-      const placesService = new google.maps.places.PlacesService(document.createElement('div'));
-      
-      // Use Place ID instead of coordinates
-      const placeId = 'ChIJafUBm_mLGGAR14swzZQc85c'; // Replace with your business Place ID
-
-      const getPlaceDetails = () => {
-        return new Promise<google.maps.places.PlaceResult>((resolve, reject) => {
-          placesService.getDetails({
-            placeId: placeId,
-            fields: ['geometry', 'name']
-          }, (place, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-              resolve(place);
-            } else {
-              reject(status);
-            }
-          });
-        });
-      };
-
       try {
-        const place = await getPlaceDetails();
-        const position = {
-          lat: place.geometry?.location?.lat() || 0,
-          lng: place.geometry?.location?.lng() || 0
-        };
+        const { Map } = await loader.importLibrary('maps');
+        const { PlacesService } = await loader.importLibrary('places');
+        
+        const map = new Map(mapRef.current!, {
+          center: { lat: 35.6604, lng: 139.7290 },
+          zoom: 17,
+          styles: [
+            {
+              featureType: "all",
+              elementType: "all",
+              stylers: [
+                { saturation: -100 },
+                { lightness: 20 }
+              ]
+            }
+          ]
+        });
 
-        if (mapRef.current) {
-          const map = new Map(mapRef.current, {
-            center: position,
-            zoom: 17,
-            styles: [
-              {
-                featureType: "all",
-                elementType: "all",
-                stylers: [
-                  { saturation: -100 },
-                  { lightness: 20 }
-                ]
-              }
-            ]
-          });
+        const placesService = new google.maps.places.PlacesService(map);
+        const placeId = 'ChIJafUBm_mLGGAR14swzZQc85c';
 
-          new google.maps.Marker({
-            position,
-            map,
-            title: "BEAUTY CELLAR BY HOLLYWOOD"
-          });
-        }
+        placesService.getDetails({
+          placeId: placeId,
+          fields: ['geometry', 'name']
+        }, (place, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+            const position = {
+              lat: place.geometry?.location?.lat() || 35.6604,
+              lng: place.geometry?.location?.lng() || 139.7290
+            };
+
+            map.setCenter(position);
+            
+            new google.maps.Marker({
+              position,
+              map,
+              title: "BEAUTY CELLAR BY HOLLYWOOD"
+            });
+          }
+        });
+
       } catch (error) {
-        console.error('Error getting place details:', error);
+        console.error('Error initializing map:', error);
       }
     };
 
