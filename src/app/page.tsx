@@ -38,7 +38,7 @@ export default function Home() {
             src="/images/hero-model1.jpg"
             alt="Model with manicure"
             fill
-            className="object-cover object-[50%_20%] transition-transform duration-100"
+            className="object-cover object-[20%_20%] sm:object-[50%_20%] transition-transform duration-100"
             priority
             style={{
               transform: `scale(${scale})`,

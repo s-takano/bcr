@@ -149,9 +149,9 @@ const Navigation = () => {
     const logoDimensions: Record<Breakpoint, LogoDimension> = {
       large: {
         start: {
-          left: horizontalMiddle - 200,
-          top: verticalMiddle - 100, // Adjust 100 based on logo height
-          scale: 1.9
+          left: horizontalMiddle - 380,
+          top: verticalMiddle, // Adjust 100 based on logo height
+          scale: 1.7
         },
         target: {
           left: 20,
@@ -161,9 +161,9 @@ const Navigation = () => {
       },
       medium: {
         start: {
-          left: horizontalMiddle - 160,
-          top: verticalMiddle - 60, // Adjust 80 for mobile logo height
-          scale: 1.5
+          left: horizontalMiddle - 320,
+          top: verticalMiddle - 70, // Adjust 80 for mobile logo height
+          scale: 1.3
         },
         target: {
           left: 5,
@@ -173,9 +173,9 @@ const Navigation = () => {
       },
       small: {
         start: {
-          left: horizontalMiddle - 140,
-          top: verticalMiddle - 40, // Adjust 80 for mobile logo height
-          scale: 1.5
+          left: horizontalMiddle - 300,
+          top: verticalMiddle - 100, // Adjust 80 for mobile logo height
+          scale: 1
         },
         target: {
           left: 5,
@@ -185,9 +185,9 @@ const Navigation = () => {
       },
       tiny: {
         start: {
-          left: horizontalMiddle - 120,
-          top: verticalMiddle - 80, // Adjust 80 for mobile logo height
-          scale: 1.5
+          left: horizontalMiddle - 200,
+          top: verticalMiddle - 110, // Adjust 80 for mobile logo height
+          scale: 1
         },
         target: {
           left: -3,
@@ -213,7 +213,7 @@ const Navigation = () => {
   const gradientVisible = textOffset < 50;
   
   return (
-    <div className="items-center max-w-7xl mx-auto fixed top-0 left-0 right-0 z-50 
+    <div className="items-center max-w-7xl mx-auto fixed top-0 left-0 right-0 z-50
       px-3 sm:px-8 py-2 sm:py-4 md:py-6 
       overflow-visible">
 
@@ -265,13 +265,29 @@ const Navigation = () => {
           </div>
         </div>
 
-        <p className="text-[#FFD700] text-base sm:text-1xl font-extralight tracking-wide leading-relaxed max-w-md my-2 text-center"
+        <div className="text-[#FFD700] text-base sm:text-1xl font-extralight tracking-wide leading-relaxed max-w-md my-2 text-center"
           style={{
             opacity: opacity,
             transition: 'opacity 0.1s ease-out'
           }}>
-          Elevate Beauty, Timeless&nbsp;Elegance
-        </p>
+          <span className="relative inline-block">
+              <div
+                className={`absolute pointer-events-none z-[-1]
+                  ${gradientVisible ? 'opacity-100' : 'opacity-0'} 
+                  transition-opacity duration-500 ease-in-out`}
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.4) 10%, transparent 70%)",
+                  top: '-50px',
+                  left: '-50px',
+                  width: '170px',
+                  height: '150px'
+                }}
+              />
+            <span>Elevate Beauty,</span>
+          </span>
+          <span>Timeless&nbsp;Elegance</span>
+        </div>
       </div>
 
       {/* Navigation */}
