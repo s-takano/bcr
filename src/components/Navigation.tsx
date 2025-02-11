@@ -101,10 +101,6 @@ const Navigation = () => {
   const activeSectionKey = activeSection as keyof typeof sections || 'home';
   const mobileLinkClass = sections[activeSectionKey].mobileLinkClass;
 
-  const getActiveLinkClass = (section: Section) => {
-    return activeSection === section.link.replace('#', '') ? "text-gold-600" : "";
-  }
-  
   type Breakpoint = "large" | "medium" | "small" | "tiny";
 
   const getBreakpoint = (): Breakpoint => {
@@ -122,6 +118,16 @@ const Navigation = () => {
     }
   }
 
+  
+  const getActiveLinkClass = (section: Section) => {
+    if( activeSection === section.link.replace('#', '') )
+      return "text-gold-600";
+    const breakpoint = getBreakpoint();
+    if( breakpoint === "large" || breakpoint === "medium" )
+      return sections[activeSection as keyof typeof sections].desktopLinkClass;
+    else
+      return sections[activeSection as keyof typeof sections].mobileLinkClass;
+  }
   
   type LogoDimension = {
     start: {
