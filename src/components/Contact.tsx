@@ -16,7 +16,7 @@ const Contact = (() => {
 
       try {
         const { Map } = await loader.importLibrary('maps');
-        const { PlacesService } = await loader.importLibrary('places');
+        await loader.importLibrary('places');
         
         const map = new Map(mapRef.current!, {
           center: { lat: 35.6604, lng: 139.7290 },
