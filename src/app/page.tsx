@@ -3,7 +3,7 @@
 import Image from "next/image";
 import AboutSection from "@/components/About";
 import Navigation from "@/components/Navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Contact from "@/components/Contact";
 import ServicesSection from "@/components/ServicesSection";
 
