@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import Navigation from '@/components/Navigation';
+import Navigation from '@/components/Navigation/index';
 
 const services = [
   {

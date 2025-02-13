@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Cormorant_Garamond, Montserrat } from 'next/font/google';
+import { Providers } from "./providers";
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -31,7 +32,9 @@ export default function RootLayout({ children }: RootLayoutProps): React.JSX.Ele
   return (
     <html lang="en" className={`${cormorant.className} ${montserrat.className}`}>
       <body className="antialiased">
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
