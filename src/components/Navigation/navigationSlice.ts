@@ -1,5 +1,5 @@
 // navigationSlice.ts
-import { createSlice, PayloadAction, createSelector, Dispatch, UnknownAction, ThunkDispatch } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector, UnknownAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootState } from '@/app/store';
 import { getBreakpoint } from '@/utils/viewport';
 import { CompleteNavigationColor, initialTransform, LogoTransform, 

@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { isElementInViewport } from "@/utils/viewport";
 import { useSelector, useDispatch } from 'react-redux';
 import { 
   setHasMounted,  
-  setLastScrollY,
   setActiveSection,
   updateLogoAnimation,
   selectNavigationColor,
