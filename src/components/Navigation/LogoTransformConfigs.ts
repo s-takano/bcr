@@ -50,7 +50,7 @@ export const LogoTransformConfigs = (screenHeight: number, screenWidth: number) 
       },
       target: {
         left: 5,
-        top: 15,
+        top: 10,
         scale: 0.8
       }
     },

@@ -175,11 +175,12 @@ const Navigation = () => {
   
 
   return (
-      <div id="navigation-root" className={`items-center max-w-7xl mx-auto fixed top-0 left-0 right-0 z-50
-        px-3 sm:px-8 py-2 sm:py-4 md:py-6 
+      <div id="navigation-root" className={`fixed items-center max-w-7xl mx-auto  
+        top-0 left-0 right-0 z-50
+        px-3 sm:px-8 py-4 sm:py-4 md:py-6 
         overflow-visible ${navigationColor}`}
         style={{
-          transition: 'top 0.3s ease-out'
+          transition: 'all 0.3s ease-out'
         }}>
 
         {/* Logo */}
