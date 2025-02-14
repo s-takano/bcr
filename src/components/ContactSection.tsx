@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { FaInstagram } from "react-icons/fa";
 import { SiLine } from "react-icons/si";
 import { Loader } from "@googlemaps/js-api-loader";
@@ -66,28 +66,6 @@ export default function ContactSection() {
     initMap();
   }, []);
 
-  // Minimal form state for demonstration
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-
-  /*
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Handle form submission (send data to API, etc.)
-    console.log(formData);
-  };
-  */
 
   return (
     <main className="flex flex-col w-full">
