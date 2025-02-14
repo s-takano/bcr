@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import AboutSection from "@/components/About";
-import Navigation from "@/components/Navigation";
+import AboutSection from "@/components/AboutSection";
+import Navigation from "@/components/NavigationSection";
 import { useEffect, useState } from "react";
-import Contact from "@/components/Contact";
+import ContactSection from "@/components/ContactSection";
 import ServicesSection from "@/components/ServicesSection";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [scale, setScale] = useState(1);
@@ -78,8 +79,10 @@ export default function Home() {
 
       {/* Contact Section - will slide over hero */}
       <section data-section="contact" className="relative z-20 bg-white">
-        <Contact />
+        <ContactSection />
       </section>
+
+      <Footer />
     </main>
   );
 }
