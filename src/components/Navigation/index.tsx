@@ -175,7 +175,7 @@ const Navigation = () => {
         className={`fixed items-center max-w-7xl mx-auto  
           top-0 left-0 right-0 z-50
           px-3 sm:px-8 
-          py-3 sm:py-4 md:py-6 
+          py-3 sm:py-3 md:py-2 lg:py-3
           ${hasMounted ? 'opacity-100' : 'opacity-0'}
           overflow-visible ${navigationTransform.color}`}
         style={{

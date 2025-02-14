@@ -29,7 +29,7 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
     },
     logo: {
       left: rem(5),
-      top: logoTop - rem(2) / 2,
+      top: logoTop - rem(-1) / 2,
       scale: 1
     }
   },
@@ -41,7 +41,7 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
     },
     logo: {
       left: rem(1),
-      top: logoTop - rem(6) / 2,
+      top: logoTop - rem(2) / 2,
       scale: 0.8
     }
   },
@@ -53,7 +53,7 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
     },
     logo: {
       left: rem(1),
-      top: logoTop - rem(4) / 2,
+      top: logoTop - rem(3) / 2,
       scale: 0.8
     }
   },
