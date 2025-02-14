@@ -56,14 +56,14 @@ export const LogoTransformConfigs = (screenHeight: number, screenWidth: number) 
     },
     tiny: {
       start: {
-        left: horizontalMiddle - 200,
+        left: horizontalMiddle - 170,
         top: verticalMiddle - 110, // Adjust 80 for mobile logo height
-        scale: 1
+        scale: 0.9
       },
       target: {
-        left: -3,
-        top: -3,
-        scale: 0.8
+        left: -10,
+        top: 0,
+        scale: 0.7
       }
     }
   }};

@@ -9,44 +9,40 @@ import {
   selectNavigationColor,
   selectLogoTextColor,
   selectGradientOpacity,
-  selectIsLogoAnimationComplete,
-  setNavigationHeight,
-  setNavigationHeightMax
+  setNavigationHeightMax,
+  updateNavigationBoundingRect,
+  getActiveLinkClass
 } from './navigationSlice';
 
 import { RootState, AppDispatch } from "@/app/store";
 
 import { 
-  ActiveLinkColor, 
-  InactiveCompleteLinkColor, 
-  InactiveTransitionLinkColor, 
-  SectionConfig, 
   sections } from "./LogoTransformConfigs";
 
 const Navigation = () => {
+
   const dispatch = useDispatch<AppDispatch>();
   const {
     activeSection,
-    subHeadlineOpacity,
     hasMounted,
     lastScrollY,
     logoTransform,
-    navigationHeight,
-    navigationHeightMax
+    subHeadlineOpacity,
+    navigationTop
   } = useSelector((state: RootState) => state.navigation);
-  
-
-  const getScrollDisplacement = () => {
-    return window.scrollY - lastScrollY;
-  }
 
   const navigationColor = useSelector(selectNavigationColor);
+
   const logoTextColor = useSelector(selectLogoTextColor);
   const gradientOpacity = useSelector(selectGradientOpacity);
-  const IsLogoAnimationComplete = useSelector(selectIsLogoAnimationComplete);
+
 
   const getNavigationRoot = () => {
     return document.getElementById('navigation-root');
+  }
+
+  const getScrollDisplacement = () => {
+    return window.scrollY - lastScrollY;
   }
 
   const slideNavigation = () => {
@@ -54,6 +50,7 @@ const Navigation = () => {
     // Get the section that has activeSection as data-section
     const firstSectionElement = document.querySelector(`[data-section="${"services"}"]`);
     if (!firstSectionElement) return;
+    const firstSectionHeight = firstSectionElement.getBoundingClientRect().top;
 
     // get root element
     const rootElement : HTMLElement = document.getElementById('navigation-root') as HTMLElement;
@@ -61,19 +58,7 @@ const Navigation = () => {
 
     const scrollDisplacement = getScrollDisplacement();
 
-    let newHeight = navigationHeight;
-
-    if(firstSectionElement.getBoundingClientRect().top <= navigationHeightMax)
-      newHeight = navigationHeight - scrollDisplacement;
-    else
-      newHeight = navigationHeightMax;
-
-    newHeight = Math.max(0, Math.min(navigationHeightMax, Math.round(newHeight)));
-    dispatch(setNavigationHeight(newHeight));
-
-    const newTop = newHeight - navigationHeightMax;
-
-    rootElement.style.top = `${newTop}px`;
+    dispatch(updateNavigationBoundingRect(firstSectionHeight, scrollDisplacement));
   }
 
   const trackScroll = () => {
@@ -90,6 +75,22 @@ const Navigation = () => {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+    }
+  }
+
+  const trackResize = () => {
+    const handleResize = () => {
+      dispatch(setNavigationHeightMax(getNavigationRoot()?.offsetHeight || 200));
+      dispatch(updateLogoAnimation(
+        window.scrollY, 
+        window.innerHeight, 
+        window.innerWidth
+      ));    
+    }
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
     }
   }
 
@@ -155,24 +156,15 @@ const Navigation = () => {
 
   useEffect(() => {
     const cleanupScrollTracker = trackScroll();
+    const cleanupResizeTracker = trackResize(); 
     return () => {
       cleanupScrollTracker();
+      cleanupResizeTracker();
     }
-  }, [hasMounted, IsLogoAnimationComplete, lastScrollY, dispatch]);
+  }, [hasMounted, lastScrollY, dispatch]);
 
 
   const activeSectionKey = activeSection as keyof typeof sections || 'home';
-
-  
-  const getActiveLinkClass = (section: SectionConfig) => {
-    if( activeSection === section.link.replace('#', '') )
-      return ActiveLinkColor;
-    if(IsLogoAnimationComplete)
-      return InactiveCompleteLinkColor;
-    else
-      return InactiveTransitionLinkColor;
-  }
-  
 
   return (
       <div id="navigation-root" className={`fixed items-center max-w-7xl mx-auto  
@@ -180,7 +172,8 @@ const Navigation = () => {
         px-3 sm:px-8 py-4 sm:py-4 md:py-6 
         overflow-visible ${navigationColor}`}
         style={{
-          transition: 'all 0.3s ease-out'
+          transition: 'all 0.3s ease-out',
+          top: `${navigationTop}px`
         }}>
 
         {/* Logo */}
@@ -207,7 +200,7 @@ const Navigation = () => {
                     transition-opacity duration-500 ease-in-out`}
                   style={{
                     background:
-                      "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.4) 10%, transparent 70%)",
+                      "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.3) 10%, transparent 50%)",
                     top: '-100px',
                     left: '-100px',
                     width: '250px',
@@ -238,7 +231,7 @@ const Navigation = () => {
                     transition-opacity duration-500 ease-in-out`}
                   style={{
                     background:
-                      "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.4) 10%, transparent 70%)",
+                      "radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.3) 10%, transparent 50%)",
                     top: '-50px',
                     left: '-50px',
                     width: '170px',
@@ -264,7 +257,7 @@ const Navigation = () => {
                     href={section.link}
                     className={`nav-link text-base sm:text-lg hover:opacity-80 transition-colors 
                       duration-300 hover:scale-110 transition-all
-                      ${getActiveLinkClass(section)}`}
+                      ${dispatch(getActiveLinkClass(section))}`}
                   >
                     {section.name}
                   </a>
@@ -284,7 +277,7 @@ const Navigation = () => {
             </button>
     
             {/* Mobile Menu Button */}
-            <button className={`md:hidden ${getActiveLinkClass(sections[activeSectionKey])}`}>
+            <button className={`md:hidden ${dispatch(getActiveLinkClass(sections[activeSectionKey]))}`}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"

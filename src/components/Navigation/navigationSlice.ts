@@ -5,7 +5,12 @@ import { getBreakpoint } from '@/utils/viewport';
 import { CompleteNavigationColor, initialTransform, LogoTransform, 
     LogoTransformConfig, LogoTransformConfigs, 
     TransitionNavigationColor, 
-    navigationLogoColor } from './LogoTransformConfigs';
+    navigationLogoColor,
+    ActiveLinkColor,
+    InactiveCompleteLinkColor,
+    InactiveTransitionLinkColor,
+    SectionConfig
+} from './LogoTransformConfigs';
 
 interface NavigationState {
   activeSection: string;
@@ -18,6 +23,7 @@ interface NavigationState {
   logoTransform: LogoTransform;
   navigationHeight: number;
   navigationHeightMax: number;
+  navigationTop: number;
 }
 
 const initialState: NavigationState = {
@@ -30,7 +36,8 @@ const initialState: NavigationState = {
   scrollProgress: 0,
   logoTransform: initialTransform,
   navigationHeight: 200,
-  navigationHeightMax: 200
+  navigationHeightMax: 200,
+  navigationTop: 0
 };  
 
 const navigationSlice = createSlice({
@@ -66,6 +73,9 @@ const navigationSlice = createSlice({
     },
     setNavigationHeightMax(state, action: PayloadAction<number>) {
       state.navigationHeightMax = action.payload;
+    },
+    setNavigationTop(state, action: PayloadAction<number>) {
+      state.navigationTop = action.payload;
     }
   },
 });
@@ -80,7 +90,8 @@ export const {
   setLastScrollY,
   setLogoTransform,
   setNavigationHeight,
-  setNavigationHeightMax
+  setNavigationHeightMax,
+  setNavigationTop
 } = navigationSlice.actions;
 
 const IsLogoAnimationComplete = (navigation: NavigationState)=> {
@@ -122,6 +133,17 @@ const getProgress = (scrollY: number | undefined) => {
   }
 
 
+export const getActiveLinkClass = (section: SectionConfig) =>
+  (_: ThunkDispatch<{navigation: NavigationState;}, undefined, UnknownAction>, getState: () => RootState) => {
+  const activeSection = getState().navigation.activeSection;
+  const IsLogoAnimationComplete = getState().navigation.logoAnimationProgress > 0.99;
+  if( activeSection === section.link.replace('#', '') )
+      return ActiveLinkColor;
+  if(IsLogoAnimationComplete)
+    return InactiveCompleteLinkColor;
+  else
+    return InactiveTransitionLinkColor;
+}
 
 
 export const updateLogoAnimation = (
@@ -155,5 +177,33 @@ export const updateLogoAnimation = (
 
     dispatch(setLogoTransform(transform));
 };
+
+
+const computeNavigationBoundingRect = (firstSectionHeight: number, scrollDisplacement: number, navigationHeight: number, navigationHeightMax: number) => {
+  let newHeight = navigationHeight;
+
+  if(firstSectionHeight <= navigationHeightMax)
+    newHeight = navigationHeight - scrollDisplacement;
+  else
+    newHeight = navigationHeightMax;
+
+  newHeight = Math.max(0, Math.min(navigationHeightMax, Math.round(newHeight)));
+
+  const newTop = newHeight - navigationHeightMax;
+
+  return {top: newTop, height: newHeight};
+}
+
+export const updateNavigationBoundingRect = (firstSectionHeight: number, scrollDisplacement: number) => 
+  (dispatch: ThunkDispatch<{navigation: NavigationState;}, undefined, UnknownAction>, getState: () => RootState) => {
+  const navigationBoundingRect = computeNavigationBoundingRect(
+    firstSectionHeight, 
+    scrollDisplacement,
+    getState().navigation.navigationHeight,
+    getState().navigation.navigationHeightMax
+  );
+  dispatch(setNavigationHeight(navigationBoundingRect.height));
+  dispatch(setNavigationTop(navigationBoundingRect.top));
+}
 
 export default navigationSlice.reducer;

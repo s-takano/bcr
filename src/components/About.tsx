@@ -58,7 +58,7 @@ const AboutSection = (() => {
       </div>
 
       {/* Center white section that hides images */}
-      <div className="absolute inset-0 flex h-[300px] sm:h-full my-10 sm:my-0">
+      <div className="absolute inset-0 flex h-[300px] sm:h-full my-0 py-0">
         <div className="flex-1 hidden sd:block sm:block" />
         {/* Remove skew and make full width on mobile */}
         <div className="w-full sm:w-5/12 bg-white/90 sm:transform sm:-skew-x-12 relative overflow-hidden">
