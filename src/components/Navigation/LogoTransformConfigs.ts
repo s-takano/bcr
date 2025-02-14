@@ -1,72 +1,81 @@
-import { Breakpoint } from "@/utils/viewport";
+import { Breakpoint, rem } from "@/utils/viewport";
 
 
-export type LogoTransformConfig = {
-    start: {
+export type BrandSignatureTransformConfig = {
+    headline: {
       left: number;
       top: number;
       scale: number;
     };
-    target: {
+    logo: {
       left: number;
       top: number;
       scale: number;
     };
   }
 
-export const LogoTransformConfigs = (screenHeight: number, screenWidth: number) : Record<Breakpoint, LogoTransformConfig>  => {
-    const verticalMiddle = screenHeight / 2;
-    const horizontalMiddle = screenWidth / 2;
-    return {
-      large: {
-      start: {
-        left: horizontalMiddle - 380,
-        top: verticalMiddle, // Adjust 100 based on logo height
-        scale: 1.7
-      },
-      target: {
-        left: 20,
-        top: 30,
-        scale: 1
-      }
+
+const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, navigationHeightMax: number, brandSignatureHeight: number) : Record<Breakpoint, BrandSignatureTransformConfig>  => {
+  console.log(screenHeight, screenWidth, navigationHeightMax, brandSignatureHeight);
+
+  const headlineTop = screenHeight / 2;
+  const headlineLeft = screenWidth / 2;
+  const logoTop = (navigationHeightMax - brandSignatureHeight) / 2;
+
+  return {
+    large: {
+    headline: {
+      left: headlineLeft - 380,
+      top: headlineTop, // Adjust 100 based on logo height
+      scale: 1.7
     },
-    medium: {
-      start: {
-        left: horizontalMiddle - 320,
-        top: verticalMiddle - 70, // Adjust 80 for mobile logo height
-        scale: 1.3
-      },
-      target: {
-        left: 5,
-        top: 20,
-        scale: 0.8
-      }
-    },
-    small: {
-      start: {
-        left: horizontalMiddle - 300,
-        top: verticalMiddle - 100, // Adjust 80 for mobile logo height
-        scale: 1
-      },
-      target: {
-        left: 5,
-        top: 10,
-        scale: 0.8
-      }
-    },
-    tiny: {
-      start: {
-        left: horizontalMiddle - 170,
-        top: verticalMiddle - 110, // Adjust 80 for mobile logo height
-        scale: 0.9
-      },
-      target: {
-        left: -10,
-        top: 0,
-        scale: 0.7
-      }
+    logo: {
+      left: rem(5),
+      top: logoTop - rem(2) / 2,
+      scale: 1
     }
-  }};
+  },
+  medium: {
+    headline: {
+      left: headlineLeft - 320,
+      top: headlineTop - 70, 
+      scale: 1.3
+    },
+    logo: {
+      left: rem(1),
+      top: logoTop - rem(6) / 2,
+      scale: 0.8
+    }
+  },
+  small: {
+    headline: {
+      left: headlineLeft - 300,
+      top: headlineTop - 100, 
+      scale: 1
+    },
+    logo: {
+      left: rem(1),
+      top: logoTop - rem(4) / 2,
+      scale: 0.8
+    }
+  },
+  tiny: {
+    headline: {
+      left: headlineLeft - 170,
+      top: headlineTop - 110, 
+      scale: 0.9
+    },
+    logo: {
+      left: -rem(3),
+      top: logoTop - rem(3) / 2,
+      scale: 0.7
+    }
+  }
+}};
+
+export const getBrandSignatureTransform = (screenHeight: number, screenWidth: number, navigationHeightMax: number, brandSignatureHeight: number, breakpoint: Breakpoint) : BrandSignatureTransformConfig => {
+  return getBrandSignatureTransforms(screenHeight, screenWidth, navigationHeightMax, brandSignatureHeight)[breakpoint];
+}
 
 export type TextColor = {
     r: number;
@@ -74,7 +83,7 @@ export type TextColor = {
     b: number;
 }
 
-export type LogoTransform = {
+export type BrandSignatureTransform = {
     left: number;
     top: number;
     scale: number;
@@ -94,7 +103,7 @@ export const NavigationLogoColor : TextColor = {
   b: 8
 }
 
-export const initialTransform : LogoTransform = {
+export const initialBrandSignatureTransform : BrandSignatureTransform = {
     left: 0,
     top: 0,
     scale: 1,

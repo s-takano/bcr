@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { 
   setHasMounted,  
   setActiveSection,
-  updateLogoAnimation,
+  updateBrandSignatureTransform,
   setNavigationHeightMax,
   updateNavigationBoundingRect,
   getActiveLinkClass
@@ -25,7 +25,7 @@ const Navigation = () => {
     activeSection,
     hasMounted,
     lastScrollY,
-    logoTransform,
+    brandSignatureTransform,
     navigationTransform
   } = useSelector((state: RootState) => state.navigation);
 
@@ -53,13 +53,18 @@ const Navigation = () => {
     dispatch(updateNavigationBoundingRect(firstSectionHeight, scrollDisplacement));
   }
 
+  const getBrandSignatureHeight = () => {
+    return document.getElementById('branding-signature')?.offsetHeight || 200;
+  }
+
   const trackScroll = () => {
     
     const handleScroll = () => {
-      dispatch(updateLogoAnimation(
+      dispatch(updateBrandSignatureTransform(
         window.scrollY, 
         window.innerHeight, 
-        window.innerWidth
+        window.innerWidth,
+        getBrandSignatureHeight()
       ));    
       slideNavigation();
     };
@@ -73,10 +78,11 @@ const Navigation = () => {
   const trackResize = () => {
     const handleResize = () => {
       dispatch(setNavigationHeightMax(getNavigationRoot()?.offsetHeight || 200));
-      dispatch(updateLogoAnimation(
+      dispatch(updateBrandSignatureTransform(
         window.scrollY, 
         window.innerHeight, 
-        window.innerWidth
+        window.innerWidth,
+        getBrandSignatureHeight()
       ));    
     }
     window.addEventListener('resize', handleResize);
@@ -135,11 +141,15 @@ const Navigation = () => {
     // Set window width after component mounts
 
     // initial Logo placement
-    dispatch(updateLogoAnimation(
+    dispatch(updateBrandSignatureTransform(
       window.scrollY, 
       window.innerHeight, 
-      window.innerWidth
+      window.innerWidth,
+      getBrandSignatureHeight()
     ));    
+
+    // initialize navigation position
+    slideNavigation();
 
     return () => {
       cleanupActiveSectionTracker();
@@ -161,28 +171,32 @@ const Navigation = () => {
   }
 
   return (
-      <div id="navigation-root" className={`fixed items-center max-w-7xl mx-auto  
-        top-0 left-0 right-0 z-50
-        px-3 sm:px-8 py-4 sm:py-4 md:py-6 
-        overflow-visible ${navigationTransform.color}`}
+      <div id="navigation-root" 
+        className={`fixed items-center max-w-7xl mx-auto  
+          top-0 left-0 right-0 z-50
+          px-3 sm:px-8 
+          py-3 sm:py-4 md:py-6 
+          ${hasMounted ? 'opacity-100' : 'opacity-0'}
+          overflow-visible ${navigationTransform.color}`}
         style={{
           transition: 'all 0.3s ease-out',
           top: `${navigationTransform.top}px`
         }}>
 
-        {/* Logo */}
-        <div className={`absolute w-fit`}
+        {/* Branding Signature */}
+        <div 
+          className={`absolute w-fit`}
           style={{
-            left: `${logoTransform.left}px`,
-            top: `${logoTransform.top}px`,
-            transform: `scale(${logoTransform.scale})`
+            left: `${brandSignatureTransform.left}px`,
+            top: `${brandSignatureTransform.top}px`,
+            transform: `scale(${brandSignatureTransform.scale})`
           }}
         >
           
-          <div 
+          <div id="branding-signature" 
             className="flex flex-col items-center justify-center mx-auto font-light"
             style={{
-              color: formatLogoTextColor(logoTransform.textColor),
+              color: formatLogoTextColor(brandSignatureTransform.textColor),
               transition: 'color 0.3s ease-out'
             }}
           >
@@ -199,7 +213,7 @@ const Navigation = () => {
                     left: '-100px',
                     width: '250px',
                     height: '250px',
-                    opacity: `${logoTransform.dropShadowOpacity}`
+                    opacity: `${brandSignatureTransform.dropShadowOpacity}`
                   }}
                 />
                 <span className="text-4xl sm:text-5xl">BEAUTY</span>
@@ -216,7 +230,7 @@ const Navigation = () => {
 
           <div className="text-[#FFD700] text-base sm:text-1xl font-extralight tracking-wide leading-relaxed max-w-md my-2 text-center"
             style={{
-              opacity: logoTransform.subHeadlineOpacity,
+              opacity: brandSignatureTransform.subHeadlineOpacity,
               transition: 'opacity 0.1s ease-out'
             }}>
             <span className="relative inline-block">
@@ -230,7 +244,7 @@ const Navigation = () => {
                     left: '-50px',
                     width: '170px',
                     height: '150px',
-                    opacity: `${logoTransform.dropShadowOpacity}`
+                    opacity: `${brandSignatureTransform.dropShadowOpacity}`
                   }}
                 />
               <span>Elevate Beauty,</span>
@@ -261,7 +275,7 @@ const Navigation = () => {
 
             {/* CTA Button */}
             <button className="text-gold-600 bg-black/20 border border-gold-600 
-                      px-2 sm:px-6 py-1 sm:py-4 
+                      px-2 sm:px-6 py-0 sm:py-2 
                       text-base md:text-lg 
                       whitespace-nowrap
                       hover:bg-gold-600/90 hover:scale-110

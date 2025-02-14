@@ -2,8 +2,9 @@
 import { createSlice, PayloadAction, createSelector, UnknownAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootState } from '@/app/store';
 import { getBreakpoint } from '@/utils/viewport';
-import { CompleteNavigationColor, initialTransform, LogoTransform, 
-    LogoTransformConfig, LogoTransformConfigs, 
+import { CompleteNavigationColor, initialBrandSignatureTransform, 
+    BrandSignatureTransform, 
+    BrandSignatureTransformConfig, getBrandSignatureTransform, 
     TransitionNavigationColor, 
     ActiveLinkColor,
     InactiveCompleteLinkColor,
@@ -16,25 +17,21 @@ import { CompleteNavigationColor, initialTransform, LogoTransform,
 
 interface NavigationState {
   activeSection: string;
-  subHeadlineOpacity: number;
   hasMounted: boolean;
-  logoAnimationProgress: number;
   lastScrollY: number;
-  scrollProgress: number;
-  logoTransform: LogoTransform;
   navigationHeight: number;
   navigationHeightMax: number;
+  animationProgress: number;
+  brandSignatureTransform: BrandSignatureTransform;
   navigationTransform: NavigationTransform;
 }
 
 const initialState: NavigationState = {
   activeSection: 'home',
-  subHeadlineOpacity: 1,
   hasMounted: false,
-  logoAnimationProgress: 0,
+  animationProgress: 0,
   lastScrollY: 0,
-  scrollProgress: 0,
-  logoTransform: initialTransform,
+  brandSignatureTransform: initialBrandSignatureTransform,
   navigationHeight: 200,
   navigationHeightMax: 200,
   navigationTransform: {
@@ -53,17 +50,14 @@ const navigationSlice = createSlice({
     setHasMounted(state, action: PayloadAction<boolean>) {
       state.hasMounted = action.payload;
     },
-    setLogoAnimationProgress(state, action: PayloadAction<number>) {
-      state.logoAnimationProgress = action.payload;
+    setAnimationProgress(state, action: PayloadAction<number>) {
+      state.animationProgress = action.payload;
     },
     setLastScrollY(state, action: PayloadAction<number>) {
       state.lastScrollY = action.payload;
     },
-    setScrollProgress(state, action: PayloadAction<number>) {
-      state.scrollProgress = action.payload;
-    },
-    setLogoTransform(state, action: PayloadAction<LogoTransform>) {
-      state.logoTransform = action.payload;
+    setBrandSignatureTransform(state, action: PayloadAction<BrandSignatureTransform>) {
+      state.brandSignatureTransform = action.payload;
     },
     setNavigationHeight(state, action: PayloadAction<number>) {
       state.navigationHeight = action.payload;
@@ -81,37 +75,37 @@ const navigationSlice = createSlice({
 export const {
   setActiveSection,
   setHasMounted,
-  setLogoAnimationProgress,
+  setAnimationProgress,
   setLastScrollY,
-  setLogoTransform,
+  setBrandSignatureTransform,
   setNavigationHeight,
   setNavigationHeightMax,
   setNavigationTransform
 } = navigationSlice.actions;
 
-const IsLogoAnimationComplete = (navigation: NavigationState)=> {
-    return navigation.logoAnimationProgress > 0.99;
+const IsAnimationComplete = (navigation: NavigationState)=> {
+    return navigation.animationProgress > 0.99;
 }
 
-const getNavigationColor = (isLogoAnimationComplete: boolean) : string => {
-  return isLogoAnimationComplete ? CompleteNavigationColor : TransitionNavigationColor;
+const getNavigationColor = (isAnimationComplete: boolean) : string => {
+  return isAnimationComplete ? CompleteNavigationColor : TransitionNavigationColor;
 }
 
-const getLogoTextColor = (logoAnimationProgress: number) : TextColor => {
+const getLogoTextColor = (animationProgress: number) : TextColor => {
   return {
-    r: 255 - (255 - NavigationLogoColor.r) * logoAnimationProgress, 
-    g: 255 - (255 - NavigationLogoColor.g) * logoAnimationProgress, 
-    b: 255 - (255 - NavigationLogoColor.b) * logoAnimationProgress
+    r: 255 - (255 - NavigationLogoColor.r) * animationProgress, 
+    g: 255 - (255 - NavigationLogoColor.g) * animationProgress, 
+    b: 255 - (255 - NavigationLogoColor.b) * animationProgress
   }
 }
 
-const getDropShadowOpacity = (logoAnimationProgress: number) : number => {
-  return 100 - 100 * logoAnimationProgress * 3;
+const getDropShadowOpacity = (animationProgress: number) : number => {
+  return 100 - 100 * animationProgress * 3;
 }
 
-export const selectIsLogoAnimationComplete = createSelector(
-  (state: RootState) => state.navigation.logoAnimationProgress,
-  (logoAnimationProgress) => logoAnimationProgress > 0.99
+export const selectIsAnimationComplete = createSelector(
+  (state: RootState) => state.navigation.animationProgress,
+  (animationProgress) => animationProgress > 0.99
 );
 
 
@@ -127,45 +121,58 @@ const getProgress = (scrollY: number | undefined) => {
 export const getActiveLinkClass = (section: SectionConfig) =>
   (_: ThunkDispatch<{navigation: NavigationState;}, undefined, UnknownAction>, getState: () => RootState) => {
   const activeSection = getState().navigation.activeSection;
-  const IsLogoAnimationComplete = getState().navigation.logoAnimationProgress > 0.99;
+  const IsAnimationComplete = getState().navigation.animationProgress > 0.99;
   if( activeSection === section.link.replace('#', '') )
       return ActiveLinkColor;
-  if(IsLogoAnimationComplete)
+  if(IsAnimationComplete)
     return InactiveCompleteLinkColor;
   else
     return InactiveTransitionLinkColor;
 }
 
-const getSubHeadlineOpacity = (logoAnimationProgress: number) : number => Math.max(0, 1 - logoAnimationProgress);
+const getSubHeadlineOpacity = (animationProgress: number) : number => Math.max(0, 1 - animationProgress);
 
+const computeBrandSignatureTransform = (screenHeight: number, screenWidth: number, navigationHeightMax: number, brandSignatureHeight: number, progress: number) : BrandSignatureTransform => {
 
-export const updateLogoAnimation = (
-    scrollY: number | undefined, screenHeight: number | undefined, 
-    screenWidth: number | undefined) =>
-    (dispatch: ThunkDispatch<{navigation: NavigationState;}, undefined, UnknownAction>) => {    
+  const config: BrandSignatureTransformConfig = getBrandSignatureTransform(screenHeight, screenWidth, navigationHeightMax, brandSignatureHeight, getBreakpoint(screenWidth));
+    
+  const transform: BrandSignatureTransform = {
+      left: config.headline.left + (config.logo.left - config.headline.left) * progress,
+      top: config.headline.top + (config.logo.top - config.headline.top) * progress,
+      scale: config.headline.scale + (config.logo.scale - config.headline.scale) * progress,
+      textColor: getLogoTextColor(progress),
+      dropShadowOpacity: getDropShadowOpacity(progress),
+      subHeadlineOpacity: getSubHeadlineOpacity(progress)
+  }
 
-    // Calculate positions based on screen height
-    const virtualScreenHeight = screenHeight ? screenHeight : 800;
-    const virtualScreenWidth = screenWidth ? screenWidth : 1024;
+  return transform;
+}
+
+export const updateBrandSignatureTransform = (
+    scrollY: number | undefined, 
+    screenHeight: number | undefined, 
+    screenWidth: number | undefined,
+    brandSignatureHeight: number
+  ) =>
+    (dispatch: ThunkDispatch<{navigation: NavigationState;}, undefined, UnknownAction>, getState: () => RootState) => {    
+
     const progress = getProgress(scrollY);
 
-    dispatch(setLogoAnimationProgress(progress));
+    dispatch(setAnimationProgress(progress));
 
     // keep track of the last scroll position
     dispatch(setLastScrollY(scrollY || 0));
 
-    const config: LogoTransformConfig = LogoTransformConfigs(virtualScreenHeight, virtualScreenWidth)[getBreakpoint(virtualScreenWidth)];
-    
-    const transform: LogoTransform = {
-        left: config.start.left + (config.target.left - config.start.left) * progress,
-        top: config.start.top + (config.target.top - config.start.top) * progress,
-        scale: config.start.scale + (config.target.scale - config.start.scale) * progress,
-        textColor: getLogoTextColor(progress),
-        dropShadowOpacity: getDropShadowOpacity(progress),
-        subHeadlineOpacity: getSubHeadlineOpacity(progress)
-    }
+    const virtualScreenHeight = screenHeight ? screenHeight : 800;
+    const virtualScreenWidth = screenWidth ? screenWidth : 1024;
+    const transform = computeBrandSignatureTransform(
+      virtualScreenHeight, 
+      virtualScreenWidth, 
+      getState().navigation.navigationHeightMax, 
+      brandSignatureHeight,
+      progress);
 
-    dispatch(setLogoTransform(transform));
+    dispatch(setBrandSignatureTransform(transform));
 };
 
 
@@ -193,10 +200,10 @@ export const updateNavigationBoundingRect = (firstSectionHeight: number, scrollD
     getState().navigation.navigationHeightMax
   );
   dispatch(setNavigationHeight(navigationBoundingRect.height));
-
+  
   const navigationTransform: NavigationTransform = {
     top: navigationBoundingRect.top,
-    color: getNavigationColor(IsLogoAnimationComplete(getState().navigation))
+    color: getNavigationColor(IsAnimationComplete(getState().navigation))
   }
   
   dispatch(setNavigationTransform(navigationTransform));

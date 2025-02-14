@@ -25,3 +25,6 @@ export const isElementInViewport = (window: Window, element: HTMLElement) => {
       rect.right > 0
     );
   }
+
+  
+export const rem = (x: number) => 4 * x;
