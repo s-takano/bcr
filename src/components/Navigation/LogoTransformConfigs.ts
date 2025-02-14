@@ -114,8 +114,8 @@ export const initialBrandSignatureTransform : BrandSignatureTransform = {
     subHeadlineOpacity: 100
 };
 
-export const TransitionNavigationColor = 'bg-transparent';
-export const CompleteNavigationColor = 'bg-black';
+export const TransitionNavigationColor = 'transparent';
+export const CompleteNavigationColor = 'black';
 
 export const ActiveLinkColor = "text-gold-600";
 export const InactiveTransitionLinkColor = "text-white hover:text-gray-400";

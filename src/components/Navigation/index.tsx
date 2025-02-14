@@ -171,16 +171,23 @@ const Navigation = () => {
   }
 
   return (
-      <div id="navigation-root" 
-        className={`fixed items-center max-w-7xl mx-auto  
+    <div id="navigation-root"
+    className={`fixed top-0 z-50 ${hasMounted ? 'opacity-100' : 'opacity-0'}
+      w-full left-0 right-0`}
+      style={{
+        backgroundColor: `${navigationTransform.color}`,
+        transition: 'all 0.3s ease-out',
+        top: `${navigationTransform.top}px`
+    }} >
+      <div  
+        className={`items-center max-w-7xl mx-auto  
           top-0 left-0 right-0 z-50
           px-3 sm:px-8 
           py-3 sm:py-3 md:py-2 lg:py-3
           ${hasMounted ? 'opacity-100' : 'opacity-0'}
-          overflow-visible ${navigationTransform.color}`}
+          overflow-visible `}
         style={{
-          transition: 'all 0.3s ease-out',
-          top: `${navigationTransform.top}px`
+          transition: 'all 0.3s ease-out'
         }}>
 
         {/* Branding Signature */}
@@ -296,6 +303,7 @@ const Navigation = () => {
               </svg>
             </button>
           </div>
+        </div>
       </div>
     </div>
   );

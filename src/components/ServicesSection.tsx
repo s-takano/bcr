@@ -6,7 +6,7 @@ import React from "react";
 const ServicesSection = (() => {
   return (
     <section className="py-0 bg-white">
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto">
         {/*
           2 Big Rows (Hair & Aesthetics, then Nail & Kimono).
           Each row: a grid of 2 columns, each column is half the screen in width (on md+).
@@ -27,14 +27,14 @@ const ServicesSection = (() => {
 
               {/* Overlay Text */}
               <div className="absolute bottom-0 left-0 p-4 md:p-8 text-white">
-                <h3 className="text-4xl md:text-5xl mb-2">
+                <h3 className="text-4xl md:text-5xl lg:text-6xl mb-2">
                   Hair
                 </h3>
-                <p className="text-sm md:text-base mb-4 max-w-sm">
+                <p className="text-sm md:text-base lg:text-lg mb-4 max-w-sm">
                   From subtle trims to complete transformations, our stylists
                   blend artistry and technique to create your perfect look.
                 </p>
-                <button className="px-4 py-2 border border-white rounded-full text-sm md:text-base 
+                <button className="px-4 py-2 border border-white rounded-full text-sm md:text-base lg:text-lg
                                    hover:bg-white hover:text-black transition-colors">
                   Learn More
                 </button>
@@ -55,14 +55,14 @@ const ServicesSection = (() => {
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
               {/* Overlay Text */}
               <div className="absolute bottom-0 left-0 p-4 md:p-8 text-white">
-                <h3 className="text-4xl md:text-5xl mb-2">
+                <h3 className="text-4xl md:text-5xl lg:text-6xl mb-2">
                   Aesthetics
                 </h3>
-                <p className="text-sm md:text-base mb-4 max-w-sm">
+                <p className="text-sm md:text-base lg:text-lg mb-4 max-w-sm">
                   Rejuvenate your skin with specialized facials, advanced
                   treatments, and dedicated care for a radiant glow.
                 </p>
-                <button className="px-4 py-2 border border-white rounded-full text-sm md:text-base 
+                <button className="px-4 py-2 border border-white rounded-full text-sm md:text-base lg:text-lg
                                    hover:bg-white hover:text-black transition-colors">
                   Learn More
                 </button>
@@ -86,14 +86,14 @@ const ServicesSection = (() => {
 
               <div className="absolute bottom-0 left-0 p-4 md:p-8 text-white">
 
-                <h3 className="text-4xl md:text-5xl mb-2">
+                <h3 className="text-4xl md:text-5xl lg:text-6xl mb-2">
                   Nail
                 </h3>
-                <p className="text-sm md:text-base mb-4 max-w-sm">
+                <p className="text-sm md:text-base lg:text-lg mb-4 max-w-sm">
                   Treat yourself to elegant manicures, pedicures, and nail art 
                   using premium products for lasting brilliance.
                 </p>
-                <button className="px-4 py-2 border border-white rounded-full text-sm md:text-base 
+                <button className="px-4 py-2 border border-white rounded-full text-sm md:text-base lg:text-lg
                                    hover:bg-white hover:text-black transition-colors">
                   Learn More
                 </button>
@@ -114,14 +114,14 @@ const ServicesSection = (() => {
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
               {/* Overlay Text */}
               <div className="absolute bottom-0 left-0 p-4 md:p-8 text-white">
-                <h3 className="text-4xl md:text-5xl mb-2">
+                <h3 className="text-4xl md:text-5xl lg:text-6xl mb-2">
                   Kimono
                 </h3>
-                <p className="text-sm md:text-base mb-4 max-w-sm">
+                <p className="text-sm md:text-base lg:text-lg mb-4 max-w-sm">
                   Experience timeless Japanese elegance with our expert kimono 
                   fitting and styling services.
                 </p>
-                <button className="px-4 py-2 border border-white rounded-full text-sm md:text-base 
+                <button className="px-4 py-2 border border-white rounded-full text-sm md:text-base lg:text-lg
                                    hover:bg-white hover:text-black transition-colors">
                   Learn More
                 </button>

@@ -69,9 +69,9 @@ const AboutSection = (() => {
 
 
 
-              <h2 className="text-xl sm:text-2xl md:text-3xl my-2 sm:my-10">
+              {/*<h2 className="text-xl sm:text-2xl md:text-3xl my-2 sm:my-10">
                 ABOUT US
-              </h2>
+              </h2>*/}
               <div className="text-xl sm:text-2xl md:text-3xl mb-2">
                 Where Tradition Meets Modern Beauty in{" "}
                 <div className="py-1" />
