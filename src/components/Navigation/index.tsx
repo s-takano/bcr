@@ -6,9 +6,6 @@ import {
   setHasMounted,  
   setActiveSection,
   updateLogoAnimation,
-  selectNavigationColor,
-  selectLogoTextColor,
-  selectGradientOpacity,
   setNavigationHeightMax,
   updateNavigationBoundingRect,
   getActiveLinkClass
@@ -17,7 +14,9 @@ import {
 import { RootState, AppDispatch } from "@/app/store";
 
 import { 
-  sections } from "./LogoTransformConfigs";
+  sections,
+  TextColor,
+} from "./LogoTransformConfigs";
 
 const Navigation = () => {
 
@@ -27,15 +26,8 @@ const Navigation = () => {
     hasMounted,
     lastScrollY,
     logoTransform,
-    subHeadlineOpacity,
-    navigationTop
+    navigationTransform
   } = useSelector((state: RootState) => state.navigation);
-
-  const navigationColor = useSelector(selectNavigationColor);
-
-  const logoTextColor = useSelector(selectLogoTextColor);
-  const gradientOpacity = useSelector(selectGradientOpacity);
-
 
   const getNavigationRoot = () => {
     return document.getElementById('navigation-root');
@@ -163,17 +155,19 @@ const Navigation = () => {
     }
   }, [hasMounted, lastScrollY, dispatch]);
 
-
-  const activeSectionKey = activeSection as keyof typeof sections || 'home';
+  
+  const formatLogoTextColor = (textColor: TextColor) => {
+    return `rgb(${textColor.r}, ${textColor.g}, ${textColor.b})`;
+  }
 
   return (
       <div id="navigation-root" className={`fixed items-center max-w-7xl mx-auto  
         top-0 left-0 right-0 z-50
         px-3 sm:px-8 py-4 sm:py-4 md:py-6 
-        overflow-visible ${navigationColor}`}
+        overflow-visible ${navigationTransform.color}`}
         style={{
           transition: 'all 0.3s ease-out',
-          top: `${navigationTop}px`
+          top: `${navigationTransform.top}px`
         }}>
 
         {/* Logo */}
@@ -188,7 +182,7 @@ const Navigation = () => {
           <div 
             className="flex flex-col items-center justify-center mx-auto font-light"
             style={{
-              color: logoTextColor,
+              color: formatLogoTextColor(logoTransform.textColor),
               transition: 'color 0.3s ease-out'
             }}
           >
@@ -205,7 +199,7 @@ const Navigation = () => {
                     left: '-100px',
                     width: '250px',
                     height: '250px',
-                    opacity: `${gradientOpacity}`
+                    opacity: `${logoTransform.dropShadowOpacity}`
                   }}
                 />
                 <span className="text-4xl sm:text-5xl">BEAUTY</span>
@@ -222,7 +216,7 @@ const Navigation = () => {
 
           <div className="text-[#FFD700] text-base sm:text-1xl font-extralight tracking-wide leading-relaxed max-w-md my-2 text-center"
             style={{
-              opacity: subHeadlineOpacity,
+              opacity: logoTransform.subHeadlineOpacity,
               transition: 'opacity 0.1s ease-out'
             }}>
             <span className="relative inline-block">
@@ -236,7 +230,7 @@ const Navigation = () => {
                     left: '-50px',
                     width: '170px',
                     height: '150px',
-                    opacity: `${gradientOpacity}`
+                    opacity: `${logoTransform.dropShadowOpacity}`
                   }}
                 />
               <span>Elevate Beauty,</span>
@@ -277,7 +271,7 @@ const Navigation = () => {
             </button>
     
             {/* Mobile Menu Button */}
-            <button className={`md:hidden ${dispatch(getActiveLinkClass(sections[activeSectionKey]))}`}>
+            <button className={`md:hidden ${dispatch(getActiveLinkClass(sections[activeSection]))}`}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"

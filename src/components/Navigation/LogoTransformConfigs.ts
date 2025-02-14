@@ -68,26 +68,47 @@ export const LogoTransformConfigs = (screenHeight: number, screenWidth: number) 
     }
   }};
 
+export type TextColor = {
+    r: number;
+    g: number;
+    b: number;
+}
+
 export type LogoTransform = {
     left: number;
     top: number;
     scale: number;
+    textColor: TextColor;
+    dropShadowOpacity: number;
+    subHeadlineOpacity: number;
+}
+
+export type NavigationTransform = {
+    top: number;
+    color: string;
+}
+
+export const NavigationLogoColor : TextColor = {
+  r: 234, 
+  g: 179, 
+  b: 8
 }
 
 export const initialTransform : LogoTransform = {
     left: 0,
     top: 0,
-    scale: 1
+    scale: 1,
+    textColor: {
+      r: 255,
+      g: 255,
+      b: 255
+    },
+    dropShadowOpacity: 100,
+    subHeadlineOpacity: 100
 };
 
 export const TransitionNavigationColor = 'bg-transparent';
 export const CompleteNavigationColor = 'bg-white';
-
-export const navigationLogoColor = {
-    r: 234, 
-    g: 179, 
-    b: 8
-  }
 
 export const ActiveLinkColor = "text-gold-600";
 export const InactiveTransitionLinkColor = "text-white hover:text-gray-400";

@@ -5,11 +5,13 @@ import { getBreakpoint } from '@/utils/viewport';
 import { CompleteNavigationColor, initialTransform, LogoTransform, 
     LogoTransformConfig, LogoTransformConfigs, 
     TransitionNavigationColor, 
-    navigationLogoColor,
     ActiveLinkColor,
     InactiveCompleteLinkColor,
     InactiveTransitionLinkColor,
-    SectionConfig
+    SectionConfig,
+    NavigationLogoColor,
+    NavigationTransform,
+    TextColor
 } from './LogoTransformConfigs';
 
 interface NavigationState {
@@ -17,13 +19,12 @@ interface NavigationState {
   subHeadlineOpacity: number;
   hasMounted: boolean;
   logoAnimationProgress: number;
-  navigationColor: string;
   lastScrollY: number;
   scrollProgress: number;
   logoTransform: LogoTransform;
   navigationHeight: number;
   navigationHeightMax: number;
-  navigationTop: number;
+  navigationTransform: NavigationTransform;
 }
 
 const initialState: NavigationState = {
@@ -31,13 +32,15 @@ const initialState: NavigationState = {
   subHeadlineOpacity: 1,
   hasMounted: false,
   logoAnimationProgress: 0,
-  navigationColor: 'bg-transparent',
   lastScrollY: 0,
   scrollProgress: 0,
   logoTransform: initialTransform,
   navigationHeight: 200,
   navigationHeightMax: 200,
-  navigationTop: 0
+  navigationTransform: {
+    top: 0,
+    color: 'bg-transparent'
+  }
 };  
 
 const navigationSlice = createSlice({
@@ -45,19 +48,13 @@ const navigationSlice = createSlice({
   initialState,
   reducers: {
     setActiveSection(state, action: PayloadAction<string>) {
-      state.activeSection = action.payload;
-    },
-    setSubHeadlineOpacity(state, action: PayloadAction<number>) {
-      state.subHeadlineOpacity = action.payload;
+      state.activeSection = action.payload || 'home';
     },
     setHasMounted(state, action: PayloadAction<boolean>) {
       state.hasMounted = action.payload;
     },
     setLogoAnimationProgress(state, action: PayloadAction<number>) {
       state.logoAnimationProgress = action.payload;
-    },
-    setNavigationColor(state, action: PayloadAction<string>) {
-      state.navigationColor = action.payload;
     },
     setLastScrollY(state, action: PayloadAction<number>) {
       state.lastScrollY = action.payload;
@@ -74,8 +71,8 @@ const navigationSlice = createSlice({
     setNavigationHeightMax(state, action: PayloadAction<number>) {
       state.navigationHeightMax = action.payload;
     },
-    setNavigationTop(state, action: PayloadAction<number>) {
-      state.navigationTop = action.payload;
+    setNavigationTransform(state, action: PayloadAction<NavigationTransform>) {
+      state.navigationTransform = action.payload;
     }
   },
 });
@@ -83,40 +80,34 @@ const navigationSlice = createSlice({
 
 export const {
   setActiveSection,
-  setSubHeadlineOpacity,
   setHasMounted,
   setLogoAnimationProgress,
-  setNavigationColor,
   setLastScrollY,
   setLogoTransform,
   setNavigationHeight,
   setNavigationHeightMax,
-  setNavigationTop
+  setNavigationTransform
 } = navigationSlice.actions;
 
 const IsLogoAnimationComplete = (navigation: NavigationState)=> {
     return navigation.logoAnimationProgress > 0.99;
 }
 
-export const selectNavigationColor = createSelector(
-  (state: RootState) => IsLogoAnimationComplete(state.navigation),
-  (IsLogoAnimationComplete) => IsLogoAnimationComplete ? CompleteNavigationColor : TransitionNavigationColor
-);
+const getNavigationColor = (isLogoAnimationComplete: boolean) : string => {
+  return isLogoAnimationComplete ? CompleteNavigationColor : TransitionNavigationColor;
+}
 
-export const selectLogoTextColor = createSelector(
-  (state: RootState) => state.navigation.logoAnimationProgress,
-  (logoAnimationProgress) => 
-     `rgb(
-      ${255 - (255 - navigationLogoColor.r) * logoAnimationProgress}, 
-      ${255 - (255 - navigationLogoColor.g) * logoAnimationProgress}, 
-      ${255 - (255 - navigationLogoColor.b) * logoAnimationProgress}
-    )`
-);
-      
-export const selectGradientOpacity = createSelector(
-  (state: RootState) => state.navigation.logoAnimationProgress,
-  (logoAnimationProgress) => 100 - 100 * logoAnimationProgress * 3
-);
+const getLogoTextColor = (logoAnimationProgress: number) : TextColor => {
+  return {
+    r: 255 - (255 - NavigationLogoColor.r) * logoAnimationProgress, 
+    g: 255 - (255 - NavigationLogoColor.g) * logoAnimationProgress, 
+    b: 255 - (255 - NavigationLogoColor.b) * logoAnimationProgress
+  }
+}
+
+const getDropShadowOpacity = (logoAnimationProgress: number) : number => {
+  return 100 - 100 * logoAnimationProgress * 3;
+}
 
 export const selectIsLogoAnimationComplete = createSelector(
   (state: RootState) => state.navigation.logoAnimationProgress,
@@ -145,6 +136,8 @@ export const getActiveLinkClass = (section: SectionConfig) =>
     return InactiveTransitionLinkColor;
 }
 
+const getSubHeadlineOpacity = (logoAnimationProgress: number) : number => Math.max(0, 1 - logoAnimationProgress);
+
 
 export const updateLogoAnimation = (
     scrollY: number | undefined, screenHeight: number | undefined, 
@@ -158,12 +151,6 @@ export const updateLogoAnimation = (
 
     dispatch(setLogoAnimationProgress(progress));
 
-    // fading out towards the end of the logo animation
-    dispatch(setSubHeadlineOpacity(Math.max(0, 1 - progress)));
-
-    // changing navigation color to white towards the end of the logo animation    
-    dispatch(setNavigationColor(progress > 0.9 ? CompleteNavigationColor : TransitionNavigationColor));
-
     // keep track of the last scroll position
     dispatch(setLastScrollY(scrollY || 0));
 
@@ -172,7 +159,10 @@ export const updateLogoAnimation = (
     const transform: LogoTransform = {
         left: config.start.left + (config.target.left - config.start.left) * progress,
         top: config.start.top + (config.target.top - config.start.top) * progress,
-        scale: config.start.scale + (config.target.scale - config.start.scale) * progress
+        scale: config.start.scale + (config.target.scale - config.start.scale) * progress,
+        textColor: getLogoTextColor(progress),
+        dropShadowOpacity: getDropShadowOpacity(progress),
+        subHeadlineOpacity: getSubHeadlineOpacity(progress)
     }
 
     dispatch(setLogoTransform(transform));
@@ -203,7 +193,13 @@ export const updateNavigationBoundingRect = (firstSectionHeight: number, scrollD
     getState().navigation.navigationHeightMax
   );
   dispatch(setNavigationHeight(navigationBoundingRect.height));
-  dispatch(setNavigationTop(navigationBoundingRect.top));
+
+  const navigationTransform: NavigationTransform = {
+    top: navigationBoundingRect.top,
+    color: getNavigationColor(IsLogoAnimationComplete(getState().navigation))
+  }
+  
+  dispatch(setNavigationTransform(navigationTransform));
 }
 
 export default navigationSlice.reducer;
