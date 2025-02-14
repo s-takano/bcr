@@ -40,7 +40,7 @@ export default function Home() {
   //const navLinkClass = isAboutInView || isContactInView ? "text-black hover:text-gray-400" : "text-white hover:text-gray-400";
 
   return (
-    <main className={`bg-white text-gray-800 font-sans relative`}>
+    <div className={`bg-white text-gray-800 font-sans relative`}>
       {/* Pass the navLinkClass to Navigation */}
       <Navigation />
 
@@ -81,8 +81,6 @@ export default function Home() {
       <section data-section="contact" className="relative z-20 bg-white">
         <ContactSection />
       </section>
-
-      <Footer />
-    </main>
+    </div>
   );
 }
