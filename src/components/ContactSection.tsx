@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { FaInstagram } from "react-icons/fa";
 import { SiLine } from "react-icons/si";
 import { Loader } from "@googlemaps/js-api-loader";
@@ -76,6 +75,7 @@ export default function ContactSection() {
     message: "",
   });
 
+  /*
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -87,6 +87,7 @@ export default function ContactSection() {
     // Handle form submission (send data to API, etc.)
     console.log(formData);
   };
+  */
 
   return (
     <main className="flex flex-col w-full">

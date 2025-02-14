@@ -6,7 +6,6 @@ import Navigation from "@/components/NavigationSection";
 import { useEffect, useState } from "react";
 import ContactSection from "@/components/ContactSection";
 import ServicesSection from "@/components/ServicesSection";
-import Footer from "@/components/Footer";
 
 export default function Home() {
   const [scale, setScale] = useState(1);
