@@ -16,8 +16,6 @@ export type BrandSignatureTransformConfig = {
 
 
 const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, navigationHeightMax: number, brandSignatureHeight: number) : Record<Breakpoint, BrandSignatureTransformConfig>  => {
-  console.log(screenHeight, screenWidth, navigationHeightMax, brandSignatureHeight);
-
   const headlineTop = screenHeight / 2;
   const headlineLeft = screenWidth / 2;
   const logoTop = (navigationHeightMax - brandSignatureHeight) / 2;
@@ -117,11 +115,11 @@ export const initialBrandSignatureTransform : BrandSignatureTransform = {
 };
 
 export const TransitionNavigationColor = 'bg-transparent';
-export const CompleteNavigationColor = 'bg-white';
+export const CompleteNavigationColor = 'bg-black';
 
 export const ActiveLinkColor = "text-gold-600";
 export const InactiveTransitionLinkColor = "text-white hover:text-gray-400";
-export const InactiveCompleteLinkColor = "text-black hover:text-gray-400";
+export const InactiveCompleteLinkColor = "text-white hover:text-gray-400";
 
 
 export type SectionConfig = {

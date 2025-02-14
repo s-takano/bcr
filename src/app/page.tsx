@@ -10,23 +10,36 @@ import ServicesSection from "@/components/ServicesSection";
 export default function Home() {
   const [scale, setScale] = useState(1);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const newScale = 1 + (scrollY * 0.00025); // Adjust 0.001 to control zoom speed
-      const limitedScale = Math.min(newScale, 1.3); // Max 1.3x zoom
-      setScale(limitedScale);
-    };
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+    const newScale = 1 + (scrollY * 0.00025); // Adjust 0.001 to control zoom speed
+    const limitedScale = Math.min(newScale, 1.3); // Max 1.3x zoom
+    setScale(limitedScale);
+  };
 
+  const trackScroll = () => {
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    }
+  }
+  
+  useEffect(() => {
+    const cleanupTrackScroll = trackScroll();
+    
+    return () => {
+      cleanupTrackScroll();
+    }
   }, []);
+
+  
 
   // Decide navigation link class based on `isAboutInView`
   //const navLinkClass = isAboutInView || isContactInView ? "text-black hover:text-gray-400" : "text-white hover:text-gray-400";
 
   return (
-    <main className="bg-white text-gray-800 font-sans relative">
+    <main className={`bg-white text-gray-800 font-sans relative`}>
       {/* Pass the navLinkClass to Navigation */}
       <Navigation />
 
@@ -38,7 +51,8 @@ export default function Home() {
             src="/images/hero-model1.jpg"
             alt="Model with manicure"
             fill
-            className="object-cover object-[20%_20%] sm:object-[50%_20%] transition-transform duration-100"
+            className={`object-cover transition-transform duration-100 
+              object-[80%_20%] sm:object-[50%_20%]`}
             priority
             style={{
               transform: `scale(${scale})`,
