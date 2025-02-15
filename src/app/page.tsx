@@ -54,7 +54,7 @@ export default function Home() {
             alt="Model with manicure"
             fill
             className={`object-cover transition-transform duration-100 
-              object-[80%_20%] sm:object-[50%_20%]`}
+              object-[70%_20%] sm:object-[50%_20%]`}
             priority
             style={{
               transform: `scale(${scale})`,
