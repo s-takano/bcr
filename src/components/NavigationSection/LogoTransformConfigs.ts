@@ -127,11 +127,20 @@ export type SectionConfig = {
     link: string;
   }
   
-export const sections: Record<string, SectionConfig> = {
+const sections: Record<string, SectionConfig> = {
     home: {name: 'Home', link: '#home'}, 
     services: {name: 'Services', link: '#services'}, 
     about: {name: 'About', link: '#about'}, 
   //   gallery: {name: 'Gallery', link: '#gallery'}, 
-    contact: {name: 'Contact', link: '#contact'}
+  //  contact: {name: 'Contact', link: '#contact'}
   };
+
+export const getAllSections = () => sections;
+
+export const getSection = (sectionName: string) => {
+  const section = sections[sectionName];
+  if( section === undefined )
+    return sections['home'];
+  return section;
+} 
   

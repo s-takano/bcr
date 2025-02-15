@@ -6,9 +6,11 @@ import Navigation from "@/components/NavigationSection";
 import { useEffect, useState } from "react";
 import ContactSection from "@/components/ContactSection";
 import ServicesSection from "@/components/ServicesSection";
+import { setHasMounted } from "@/components/NavigationSection/navigationSlice";
 
 export default function Home() {
   const [scale, setScale] = useState(1);
+  const [hasMounted, setHasMounted] = useState(false);
 
   const handleScroll = () => {
     const scrollY = window.scrollY;
@@ -26,6 +28,8 @@ export default function Home() {
   }
   
   useEffect(() => {
+    setHasMounted(true);
+
     const cleanupTrackScroll = trackScroll();
     
     return () => {
@@ -39,7 +43,7 @@ export default function Home() {
   //const navLinkClass = isAboutInView || isContactInView ? "text-black hover:text-gray-400" : "text-white hover:text-gray-400";
 
   return (
-    <div className={`bg-white text-gray-800 font-sans relative`}>
+    <div className={`relative bg-white text-gray-800 font-sans ${!hasMounted ? "opacity-0": "opacity-100"} transform-opacity duration-500 `}>
       {/* Pass the navLinkClass to Navigation */}
       <Navigation />
 
@@ -78,7 +82,7 @@ export default function Home() {
 
       {/* Contact Section - will slide over hero */}
       <section data-section="contact" className="relative z-20 bg-white">
-        <ContactSection />
+     {/*   <ContactSection /> */}
       </section>
     </div>
   );

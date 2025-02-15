@@ -11,70 +11,75 @@ export default function ContactSection() {
   useEffect(() => {
     const initMap = async () => {
       const loader = new Loader({
-        apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-        version: 'weekly',
-        libraries: ['places']
+        apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+        version: "weekly",
+        libraries: ["places"],
       });
 
       try {
-        const { Map } = await loader.importLibrary('maps');
-        await loader.importLibrary('places');
-        
+        const { Map } = await loader.importLibrary("maps");
+        await loader.importLibrary("places");
+
         const map = new Map(mapRef.current!, {
-          center: { lat: 35.6604, lng: 139.7290 },
+          center: { lat: 35.6604, lng: 139.729 },
           zoom: 17,
           styles: [
             {
               featureType: "all",
               elementType: "all",
-              stylers: [
-                { saturation: -100 },
-                { lightness: 20 }
-              ]
-            }
-          ]
+              stylers: [{ saturation: -100 }, { lightness: 20 }],
+            },
+          ],
         });
 
         const placesService = new google.maps.places.PlacesService(map);
-        const placeId = 'ChIJafUBm_mLGGAR14swzZQc85c';
+        const placeId = "ChIJafUBm_mLGGAR14swzZQc85c";
 
-        placesService.getDetails({
-          placeId: placeId,
-          fields: ['geometry', 'name']
-        }, (place, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-            const position = {
-              lat: place.geometry?.location?.lat() || 35.6604,
-              lng: place.geometry?.location?.lng() || 139.7290
-            };
+        placesService.getDetails(
+          { placeId, fields: ["geometry", "name"] },
+          (place, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+              const position = {
+                lat: place.geometry?.location?.lat() || 35.6604,
+                lng: place.geometry?.location?.lng() || 139.729,
+              };
 
-            map.setCenter(position);
-            
-            new google.maps.Marker({
-              position,
-              map,
-              title: "BEAUTY CELLAR BY HOLLYWOOD"
-            });
+              map.setCenter(position);
+
+              new google.maps.Marker({
+                position,
+                map,
+                title: "BEAUTY CELLAR BY HOLLYWOOD",
+              });
+            }
           }
-        });
-
+        );
       } catch (error) {
-        console.error('Error initializing map:', error);
+        console.error("Error initializing map:", error);
       }
     };
 
     initMap();
   }, []);
 
-
   return (
     <main className="flex flex-col w-full">
-      {/* Row 1 */}
-      <section className="grid grid-cols-[2fr_1fr] max-w-6xl mx-auto w-full
-        px-4 md:px-8 py-12 md:py-16">
-
-        {/* Left Column: Address & Links */}
-        <div className="flex flex-col justify-center space-y-8 order-2">
+      <section
+        className="
+          max-w-6xl mx-auto w-full
+          px-4 md:px-8
+          py-12 md:py-16
+          grid grid-cols-1 md:grid-cols-[2fr_1fr]
+          gap-8
+        "
+      >
+        {/* Contact Info Column */}
+        {/*
+          On mobile: This is order-2, so it stacks AFTER the map.
+          On md+: It's the first column (order-1).
+          The grid template places this in the "2fr" part, so it's wider than the map.
+        */}
+        <div className="order-2 md:order-1 flex flex-col justify-center space-y-8">
           {/* Contact */}
           <div>
             <h3 className="text-lg font-medium mb-3">Contact:</h3>
@@ -149,27 +154,18 @@ export default function ContactSection() {
               </span>
             </p>
           </div>
-
         </div>
 
-        {/* Map */}
-        <div className="flex order-1 p-3 md:p-10 flex justify-center items-center
-          w-full ">
-          <div ref={mapRef} className="w-full h-full h-[400px] md:h-[450px]" />
+        {/* Map Column */}
+        {/*
+          On mobile: This is order-1, so it appears FIRST.
+          On md+: It's the second column (order-2).
+          The grid template sets this at "1fr", so narrower than the info column.
+        */}
+        <div className="order-1 md:order-2 flex justify-center items-center p-3 md:p-6">
+          {/* Ensure a fixed height for the map so it doesn't overwhelm small screens */}
+          <div ref={mapRef} className="w-full h-[300px] md:h-[350px]" />
         </div>
-        
-        {/* Right Column: Another Image */}
-        {/*<div className="order-1 md:order-1 p-10 flex justify-center items-center">
-          <div className="relative w-full h-[400px] md:h-[400px]">
-            <Image
-              src="/images/tokyo-night.jpg"
-              alt="Another Tokyo cityscape"
-              fill
-              className="object-cover object-center"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          </div>
-        </div>*/}
       </section>
     </main>
   );

@@ -57,7 +57,7 @@ body {
   }
 }
 
-/* Create a utility class (if not using Tailwind’s built-in animations) */
+/* Create a utility class (if not using Tailwind's built-in animations) */
 .animate-flowLeft {
-  animation: flowLeft 60s linear infinite;
+  animation: flowLeft 30s linear infinite;
 }

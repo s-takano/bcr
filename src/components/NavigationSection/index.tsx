@@ -14,7 +14,8 @@ import {
 import { RootState, AppDispatch } from "@/app/store";
 
 import { 
-  sections,
+  getSection,
+  getAllSections,
   TextColor,
 } from "./LogoTransformConfigs";
 
@@ -266,7 +267,7 @@ const Navigation = () => {
           <div className="flex items-center justify-end space-x-5">
             {/* Navigation Links */}
             <ul className="hidden md:inline-flex space-x-4 md:space-x-4 lg:space-x-6">
-              {Object.values(sections).map((section) => (
+              {Object.values(getAllSections()).map((section) => (
                 <li key={section.link}>
                   <a
                     href={section.link}
@@ -292,7 +293,7 @@ const Navigation = () => {
             </button>
     
             {/* Mobile Menu Button */}
-            <button className={`md:hidden ${dispatch(getActiveLinkClass(sections[activeSection]))}`}>
+            <button className={`md:hidden ${dispatch(getActiveLinkClass(getSection(activeSection)))}`}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
