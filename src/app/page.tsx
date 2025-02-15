@@ -4,9 +4,7 @@ import Image from "next/image";
 import AboutSection from "@/components/AboutSection";
 import Navigation from "@/components/NavigationSection";
 import { useEffect, useState } from "react";
-import ContactSection from "@/components/ContactSection";
 import ServicesSection from "@/components/ServicesSection";
-import { setHasMounted } from "@/components/NavigationSection/navigationSlice";
 
 export default function Home() {
   const [scale, setScale] = useState(1);
