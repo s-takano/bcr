@@ -194,6 +194,18 @@ const Navigation = () => {
     }
   }, [hasMounted, lastScrollY, dispatch]);
 
+  useEffect(() => {
+    if (brandSignatureTransform.subHeadlineOpacity === 0 || brandSignatureTransform.subHeadlineOpacity > 0.8) {
+      dispatch(setScreenDimensions({
+        screenHeight: window.innerHeight,
+        screenWidth: window.innerWidth,
+        navigationHeightMax: getNavigationRoot()?.offsetHeight || 200,
+        brandSignatureWidth: getBrandSignatureDimensions().width,
+        brandSignatureHeight: getBrandSignatureDimensions().height
+      }));  
+    }
+  }, [brandSignatureTransform]);
+
 
   const formatLogoTextColor = (textColor: TextColor) => {
     return `rgb(${textColor.r}, ${textColor.g}, ${textColor.b})`;
@@ -221,7 +233,7 @@ const Navigation = () => {
           }}>
 
           {/* Branding Signature */}
-          <div
+          <div id="branding-signature"
             className={`absolute w-fit`}
             style={{
               left: `${brandSignatureTransform.left}px`,
@@ -230,7 +242,7 @@ const Navigation = () => {
             }}
           >
 
-            <div id="branding-signature"
+            <div 
               className="flex flex-col items-center justify-center mx-auto font-light"
               style={{
                 color: formatLogoTextColor(brandSignatureTransform.textColor),
@@ -268,7 +280,8 @@ const Navigation = () => {
             <div className="text-[#FFD700] text-base sm:text-1xl font-extralight tracking-wide leading-relaxed max-w-md my-2 text-center"
               style={{
                 opacity: brandSignatureTransform.subHeadlineOpacity,
-                transition: 'opacity 0.1s ease-out'
+                transition: 'opacity 0.1s ease-out',
+                display: brandSignatureTransform.subHeadlineOpacity === 0 ? 'none' : 'block'
               }}>
               <span className="relative inline-block">
                 <div

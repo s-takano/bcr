@@ -19,25 +19,29 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
 
   const displacementFactorX = 0.7;
   const displacementFactorY = 1;
-  
+  const paddingY = 50;
+
   // Calculate the displacement 1/4 of the screen width and height
-  const horizontalDisplacement = Math.round(screenWidth / 4 * displacementFactorX);
-  const verticalDisplacement = Math.round(screenHeight / 4 * displacementFactorY);  
+  const horizontalDisplacement1_4 = Math.round(screenWidth / 4 * displacementFactorX);
+  const verticalDisplacement1_4 = Math.round(screenHeight / 4 * displacementFactorY);  
 
   // Calculate the center of the screen
-  const centerLeft = (screenWidth - brandSignatureWidth) / 2;
-  const centerTop = (screenHeight - brandSignatureHeight) / 2;
+  const centerX = (screenWidth - brandSignatureWidth) / 2;
+  const centerY = (screenHeight - brandSignatureHeight) / 2;
+
+  const bottomY = screenHeight - (brandSignatureHeight + paddingY) ;
 
   const headlinePositions = {
     left: {
-      left: centerLeft - horizontalDisplacement,
-      center: centerLeft,
-      right: centerLeft + horizontalDisplacement
+      left: centerX - horizontalDisplacement1_4,
+      center: centerX,
+      right: centerX + horizontalDisplacement1_4
     },
     top: {
-      center: centerTop,
-      top: centerTop - verticalDisplacement,
-      bottom: centerTop + verticalDisplacement
+      top: centerY - verticalDisplacement1_4,
+      center: centerY,
+      bottom1_4: centerY + verticalDisplacement1_4,
+      bottom: bottomY
     }
   }
 
@@ -47,36 +51,36 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
     large: {
       headline: {
         left: headlinePositions.left.left,
-        top: headlinePositions.top.center, // Adjust 100 based on logo height
+        top: headlinePositions.top.bottom1_4, // Adjust 100 based on logo height
         scale: 1.7
       },
       logo: {
         left: rem(5),
-        top: logoTop - rem(-1) / 2,
+        top: logoTop,
         scale: 1
       }
     },
     medium: {
       headline: {
         left: headlinePositions.left.left,
-        top: headlinePositions.top.center,
+        top: headlinePositions.top.bottom1_4,
         scale: 1.5
       },
       logo: {
         left: rem(1),
-        top: logoTop - rem(2) / 2,
+        top: logoTop,
         scale: 0.8
       }
     },
     small: {
       headline: {
-        left: headlinePositions.left.center,
-        top: headlinePositions.top.bottom,
+        left: headlinePositions.left.left,
+        top: headlinePositions.top.bottom1_4,
         scale: 1.3
       },
       logo: {
         left: rem(1),
-        top: logoTop - rem(3) / 2,
+        top: logoTop,
         scale: 0.8
       }
     },
@@ -88,7 +92,7 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
       },
       logo: {
         left: -rem(3),
-        top: logoTop - rem(3) / 2,
+        top: logoTop,
         scale: 0.7
       }
     }

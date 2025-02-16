@@ -113,7 +113,7 @@ const getProgress = (scrollY: number | undefined) => {
 }
 
 
-const getSubHeadlineOpacity = (animationProgress: number): number => Math.max(0, 1 - animationProgress);
+const getSubHeadlineOpacity = (animationProgress: number): number => Math.max(0, 1 - animationProgress * 1.5);
 
 const computeBrandSignatureTransform = (screenHeight: number, screenWidth: number, navigationHeightMax: number, brandSignatureWidth: number, brandSignatureHeight: number, progress: number): BrandSignatureTransform => {
 
