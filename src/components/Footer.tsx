@@ -69,7 +69,7 @@ export default function Footer() {
                 {/* Column 1: Contact Info + CTA */}
                 <div className="flex flex-col space-y-4 text-gray-700">
                     <div className="leading-relaxed">
-                        <Link href={"/contact"} 
+                        <Link href={"/contact"}
                             className="underline mb-3 transition-colors hover:bg-black hover:text-white inline-block">
                             Contact us
                         </Link>
@@ -86,24 +86,19 @@ export default function Footer() {
                         </a>
                         {/* Hours */}
                         <div>
-                            <div className="font-medium mb-3">Hours:</div>
-                            <div className="ml-5">  
-                                <p className="text-sm text-gray-600">
-                                Mon – Sun: 10:00 – 18:00
-                                <br />
-                                <span className="italic text-xs">
-                                    *Last appointment 1 hour before closing
-                                </span>
-                                </p>
+                            <div className="font-medium mb-0">Hours:</div>
+                            <div className="ml-5">
+                                <div className="text-sm text-gray-600">
+                                    Mon – Sun: 10:00 – 18:00
+                                    <br />
+                                    <span className="italic text-xs">
+                                        *Last appointment 1 hour before closing
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Copyright */}
-                    <p className="text-sm mt-4">
-                        &copy; {new Date().getFullYear()} Ponytail Co., Ltd. All rights
-                        reserved.
-                    </p>
                 </div>
 
                 {/* Column 2: Small Map */}
@@ -162,6 +157,13 @@ export default function Footer() {
                             {/* Add any other links you need here */}
                         </ul>
                     </div>
+
+                    {/* Copyright */}
+                    <p className="text-sm mt-4">
+                        &copy; {new Date().getFullYear()} Ponytail Co., Ltd. All rights
+                        reserved.
+                    </p>
+
                 </div>
             </div>
         </footer>

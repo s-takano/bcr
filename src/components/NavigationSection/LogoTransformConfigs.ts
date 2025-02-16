@@ -35,9 +35,9 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
   },
   medium: {
     headline: {
-      left: headlineLeft - 320,
-      top: headlineTop - 70, 
-      scale: 1.3
+      left: headlineLeft - 220,
+      top: headlineTop, 
+      scale: 1.5
     },
     logo: {
       left: rem(1),
@@ -47,9 +47,9 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
   },
   small: {
     headline: {
-      left: headlineLeft - 300,
-      top: headlineTop - 100, 
-      scale: 1
+      left: headlineLeft - 200,
+      top: headlineTop, 
+      scale: 1.3
     },
     logo: {
       left: rem(1),
@@ -59,9 +59,9 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
   },
   tiny: {
     headline: {
-      left: headlineLeft - 170,
-      top: headlineTop - 110, 
-      scale: 0.9
+      left: headlineLeft - 120,
+      top: headlineTop - 50, 
+      scale: 1.3
     },
     logo: {
       left: -rem(3),
@@ -90,9 +90,17 @@ export type BrandSignatureTransform = {
     subHeadlineOpacity: number;
 }
 
+export type ScreenDimensions = {
+  screenHeight: number;
+  screenWidth: number;
+  navigationHeightMax: number;  
+  brandSignatureHeight: number;
+}
+
 export type NavigationTransform = {
     top: number;
-    color: string;
+    isActive: boolean;
+    navigationHeight: number;
 }
 
 export const NavigationLogoColor : TextColor = {
@@ -144,3 +152,6 @@ export const getSection = (sectionName: string) => {
   return section;
 } 
   
+export const getNavigationColor = (isActive: boolean) : string => {
+  return isActive ? CompleteNavigationColor : TransitionNavigationColor;
+}
