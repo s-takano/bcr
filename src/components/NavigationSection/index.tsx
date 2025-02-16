@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import {
   setHasMounted,
-  setActiveSection,
   slideBrandSignature,
   updateNavigationBoundingRect,
-  getActiveLinkClass,
   setSidebarMenuOpen,
   toggleSidebarMenu,
   setScreenDimensions
@@ -20,6 +18,10 @@ import {
   getAllSections,
   TextColor,
   getNavigationColor,
+  InactiveTransitionLinkColor,
+  InactiveCompleteLinkColor,
+  ActiveLinkColor,
+  SectionConfig
 } from "./LogoTransformConfigs";
 
 import { HAMBURGER_ICON } from "@/components/Icons/constants";
@@ -27,15 +29,18 @@ import SidebarMenu from "@/components/SidebarMenu";
 
 const Navigation = () => {
 
+  const [activeSection, setActiveSection] = useState('home');
+  
   const dispatch = useDispatch<AppDispatch>();
 
   const {
-    activeSection,
     hasMounted,
     lastScrollY,
     brandSignatureTransform,
     navigationTransform,
-    sidebarMenuOpen
+    sidebarMenuOpen,
+    screenDimensions,
+    animationProgress
   } = useSelector((state: RootState) => state.navigation);
 
   const getNavigationRoot = () => {
@@ -46,6 +51,17 @@ const Navigation = () => {
     return window.scrollY - lastScrollY;
   }
 
+  
+  const getActiveLinkClass = (section: SectionConfig) => {
+    const isAnimationComplete = animationProgress === 1;
+    if (activeSection === section.link.replace('#', ''))
+      return ActiveLinkColor;
+    if (isAnimationComplete)
+      return InactiveCompleteLinkColor;
+    else
+      return InactiveTransitionLinkColor;
+  }
+  
   const slideNavigation = () => {
 
     // Get the section that has activeSection as data-section
@@ -62,8 +78,13 @@ const Navigation = () => {
     dispatch(updateNavigationBoundingRect(firstSectionHeight, scrollDisplacement));
   }
 
-  const getBrandSignatureHeight = () => {
-    return document.getElementById('branding-signature')?.offsetHeight || 200;
+  const getBrandSignatureDimensions = () => {
+    const brandSignatureElement = document.getElementById('branding-signature');
+    if (!brandSignatureElement) return { width: 0, height: 0 };
+    return {
+      width: brandSignatureElement.offsetWidth,
+      height: brandSignatureElement.offsetHeight
+    };
   }
 
   const trackScroll = () => {
@@ -86,7 +107,8 @@ const Navigation = () => {
         screenHeight: window.innerHeight,
         screenWidth: window.innerWidth,
         navigationHeightMax: getNavigationRoot()?.offsetHeight || 200,
-        brandSignatureHeight: getBrandSignatureHeight()
+        brandSignatureWidth: getBrandSignatureDimensions().width,
+        brandSignatureHeight: getBrandSignatureDimensions().height
       }));
 
       dispatch(slideBrandSignature(window.scrollY));
@@ -121,7 +143,7 @@ const Navigation = () => {
 
 
     const observer = new IntersectionObserver(
-      (entries) => dispatch(setActiveSection(findActiveSection(entries) || 'home')),
+      (entries) => setActiveSection(findActiveSection(entries) || 'home'),
       {
         threshold: [0.2, 0.5, 0.7], // Multiple thresholds for better detection
         rootMargin: '-10% 0px -10% 0px' // Adjust trigger area
@@ -144,7 +166,8 @@ const Navigation = () => {
       screenHeight: window.innerHeight,
       screenWidth: window.innerWidth,
       navigationHeightMax: getNavigationRoot()?.offsetHeight || 200,
-      brandSignatureHeight: getBrandSignatureHeight()
+      brandSignatureWidth: getBrandSignatureDimensions().width,
+      brandSignatureHeight: getBrandSignatureDimensions().height
     }));
 
 
@@ -184,7 +207,7 @@ const Navigation = () => {
         style={{
           backgroundColor: `${getNavigationColor(navigationTransform.isActive)}`,
           transition: 'all 0.3s ease-out',
-          top: `${navigationTransform.top}px`
+          top: `${navigationTransform.height - screenDimensions.navigationHeightMax}px`
         }} >
         <div
           className={`items-center max-w-7xl mx-auto  
@@ -279,7 +302,7 @@ const Navigation = () => {
                       href={section.link}
                       className={`nav-link text-base sm:text-lg hover:opacity-80 transition-colors 
                       duration-300 hover:scale-110 transition-all
-                      ${dispatch(getActiveLinkClass(section))}`}
+                      ${getActiveLinkClass(section)}`}
                     >
                       {section.name}
                     </a>
@@ -299,10 +322,15 @@ const Navigation = () => {
               </button>
 
               {/* Mobile Menu Button */}
-              <button className={`md:hidden ${dispatch(getActiveLinkClass(getSection(activeSection)))}`}
+              <button 
+                className={`md:hidden ${getActiveLinkClass(getSection(activeSection))} transition-transform duration-300`}
                 onClick={() => dispatch(toggleSidebarMenu())}
               >
-                {HAMBURGER_ICON}
+                {sidebarMenuOpen ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : HAMBURGER_ICON}
               </button>
             </div>
           </div>

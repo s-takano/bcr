@@ -6,10 +6,6 @@ import {
   initialBrandSignatureTransform,
   BrandSignatureTransform,
   BrandSignatureTransformConfig, getBrandSignatureTransform,
-  ActiveLinkColor,
-  InactiveCompleteLinkColor,
-  InactiveTransitionLinkColor,
-  SectionConfig,
   NavigationLogoColor,
   NavigationTransform,
   TextColor,
@@ -17,7 +13,6 @@ import {
 } from './LogoTransformConfigs';
 
 interface NavigationState {
-  activeSection: string;
   hasMounted: boolean;
   lastScrollY: number;
   animationProgress: number;
@@ -28,7 +23,6 @@ interface NavigationState {
 }
 
 const initialState: NavigationState = {
-  activeSection: 'home',
   hasMounted: false,
   animationProgress: 0,
   lastScrollY: 0,
@@ -36,13 +30,13 @@ const initialState: NavigationState = {
     screenHeight: 0,
     screenWidth: 0,
     navigationHeightMax: 200,
+    brandSignatureWidth: 100,
     brandSignatureHeight: 200
   },
   brandSignatureTransform: initialBrandSignatureTransform,
   navigationTransform: {
-    top: 0,
     isActive: false,
-    navigationHeight: 200
+    height: 200
   },
   sidebarMenuOpen: false
 };
@@ -51,9 +45,6 @@ const navigationSlice = createSlice({
   name: 'navigation',
   initialState,
   reducers: {
-    setActiveSection(state, action: PayloadAction<string>) {
-      state.activeSection = action.payload || 'home';
-    },
     setHasMounted(state, action: PayloadAction<boolean>) {
       state.hasMounted = action.payload;
     },
@@ -67,7 +58,6 @@ const navigationSlice = createSlice({
       state.brandSignatureTransform = action.payload;
     },
     setNavigationTransform(state, action: PayloadAction<NavigationTransform>) {
-      console.log('setNavigationTransform', action.payload);
       state.navigationTransform = action.payload;
     },
     setSidebarMenuOpen(state, action: PayloadAction<boolean>) {
@@ -81,7 +71,6 @@ const navigationSlice = createSlice({
 
 
 export const {
-  setActiveSection,
   setHasMounted,
   setAnimationProgress,
   setLastScrollY,
@@ -124,23 +113,11 @@ const getProgress = (scrollY: number | undefined) => {
 }
 
 
-export const getActiveLinkClass = (section: SectionConfig) =>
-  (_: ThunkDispatch<{ navigation: NavigationState; }, undefined, UnknownAction>, getState: () => RootState) => {
-    const activeSection = getState().navigation.activeSection;
-    const isAnimationComplete = IsAnimationComplete(getState().navigation);
-    if (activeSection === section.link.replace('#', ''))
-      return ActiveLinkColor;
-    if (isAnimationComplete)
-      return InactiveCompleteLinkColor;
-    else
-      return InactiveTransitionLinkColor;
-  }
-
 const getSubHeadlineOpacity = (animationProgress: number): number => Math.max(0, 1 - animationProgress);
 
-const computeBrandSignatureTransform = (screenHeight: number, screenWidth: number, navigationHeightMax: number, brandSignatureHeight: number, progress: number): BrandSignatureTransform => {
+const computeBrandSignatureTransform = (screenHeight: number, screenWidth: number, navigationHeightMax: number, brandSignatureWidth: number, brandSignatureHeight: number, progress: number): BrandSignatureTransform => {
 
-  const config: BrandSignatureTransformConfig = getBrandSignatureTransform(screenHeight, screenWidth, navigationHeightMax, brandSignatureHeight, getBreakpoint(screenWidth));
+  const config: BrandSignatureTransformConfig = getBrandSignatureTransform(screenHeight, screenWidth, navigationHeightMax, brandSignatureWidth, brandSignatureHeight, getBreakpoint(screenWidth));
 
   const transform: BrandSignatureTransform = {
     left: config.headline.left + (config.logo.left - config.headline.left) * progress,
@@ -155,7 +132,7 @@ const computeBrandSignatureTransform = (screenHeight: number, screenWidth: numbe
 }
 
 
-const updateBrandSignatureTransform = (progress: number) => (dispatch: ThunkDispatch<{ navigation: NavigationState; }, undefined, UnknownAction>, getState: () => RootState) => {
+const updateBrandSignatureTransform = (progress: number, sidebarMenuOpen: boolean) => (dispatch: ThunkDispatch<{ navigation: NavigationState; }, undefined, UnknownAction>, getState: () => RootState) => {
 
   const virtualScreenHeight = getState().navigation.screenDimensions.screenHeight || 800;
   const virtualScreenWidth = getState().navigation.screenDimensions.screenWidth || 1024;
@@ -164,8 +141,9 @@ const updateBrandSignatureTransform = (progress: number) => (dispatch: ThunkDisp
     virtualScreenHeight,
     virtualScreenWidth,
     getState().navigation.screenDimensions.navigationHeightMax,
+    getState().navigation.screenDimensions.brandSignatureWidth,
     getState().navigation.screenDimensions.brandSignatureHeight,
-    progress);
+    sidebarMenuOpen ? 1 : progress);
 
   dispatch(setBrandSignatureTransform(transform));
 }
@@ -173,7 +151,7 @@ const updateBrandSignatureTransform = (progress: number) => (dispatch: ThunkDisp
 export const slideBrandSignature = (
   scrollY: number | undefined,
 ) =>
-  (dispatch: ThunkDispatch<{ navigation: NavigationState; }, undefined, UnknownAction>) => {
+  (dispatch: ThunkDispatch<{ navigation: NavigationState; }, undefined, UnknownAction>, getState: () => RootState) => {
 
     const progress = getProgress(scrollY);
 
@@ -182,38 +160,37 @@ export const slideBrandSignature = (
     // keep track of the last scroll position
     dispatch(setLastScrollY(scrollY || 0));
 
-    dispatch(updateBrandSignatureTransform(progress));
-};
+    dispatch(updateBrandSignatureTransform(progress, getState().navigation.sidebarMenuOpen));
+  };
 
 
-const computeNavigationBoundingRect = (firstSectionHeight: number, scrollDisplacement: number, navigationHeight: number, navigationHeightMax: number) => {
+const computeNavigationHeight = (sidebarMenuOpen: boolean, firstSectionHeight: number, scrollDisplacement: number, navigationHeight: number, navigationHeightMax: number) => {
   let newHeight = navigationHeight;
 
-  if (firstSectionHeight <= navigationHeightMax)
+  if (firstSectionHeight <= navigationHeightMax && !sidebarMenuOpen)
     newHeight = navigationHeight - scrollDisplacement;
   else
     newHeight = navigationHeightMax;
 
   newHeight = Math.max(0, Math.min(navigationHeightMax, Math.round(newHeight)));
 
-  const newTop = newHeight - navigationHeightMax;
-
-  return { top: newTop, height: newHeight };
+  return newHeight;
 }
 
 export const updateNavigationBoundingRect = (firstSectionHeight: number, scrollDisplacement: number) =>
   (dispatch: ThunkDispatch<{ navigation: NavigationState; }, undefined, UnknownAction>, getState: () => RootState) => {
-    const navigationBoundingRect = computeNavigationBoundingRect(
+
+    const navigationHeight = computeNavigationHeight(
+      getState().navigation.sidebarMenuOpen,
       firstSectionHeight,
       scrollDisplacement,
-      getState().navigation.navigationTransform.navigationHeight,
+      getState().navigation.navigationTransform.height,
       getState().navigation.screenDimensions.navigationHeightMax
     );
 
     dispatch(setNavigationTransform({
-      top: getState().navigation.sidebarMenuOpen ? 0 : navigationBoundingRect.top,
       isActive: IsAnimationComplete(getState().navigation),
-      navigationHeight: navigationBoundingRect.height
+      height: navigationHeight
     }));
   }
 
@@ -223,13 +200,13 @@ export const toggleSidebarMenu = () =>
     dispatch(setSidebarMenuOpen(!getState().navigation.sidebarMenuOpen));
 
     dispatch(setNavigationTransform({
-      top: getState().navigation.sidebarMenuOpen ? 0 : getState().navigation.navigationTransform.top,
       isActive: IsAnimationComplete(getState().navigation),
-      navigationHeight: getState().navigation.navigationTransform.navigationHeight
+      height: getState().navigation.navigationTransform.height
     }));
 
     dispatch(updateBrandSignatureTransform(
-      getState().navigation.sidebarMenuOpen ? 1 : getState().navigation.animationProgress));
+      getState().navigation.animationProgress,
+      getState().navigation.sidebarMenuOpen));
   }
 
 export default navigationSlice.reducer;

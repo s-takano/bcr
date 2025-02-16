@@ -51,9 +51,9 @@ export default function Home() {
         <div className="absolute inset-0 transform translate-x-48 md:translate-x-64 -ml-64">
           <Image
             src="/images/hero-model1.jpg"
-            alt="Model with manicure"
+            alt="Hero Model"
             fill
-            className={`object-cover transition-transform duration-100 
+            className={`object-cover transition-transform duration-100
               object-[70%_20%] sm:object-[50%_20%]`}
             priority
             style={{
