@@ -15,35 +15,44 @@ export type BrandSignatureTransformConfig = {
 }
 
 
-const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, navigationHeightMax: number, brandSignatureWidth: number, brandSignatureHeight: number): Record<Breakpoint, BrandSignatureTransformConfig> => {
+const getBrandSignatureTransforms = (
+  screenHeight: number,
+  screenWidth: number,
+  navigationHeightMax: number,
+  brandSignatureWidth: number,
+  brandSignatureHeight: number
+): Record<Breakpoint, BrandSignatureTransformConfig> => {
+  // Configuration constants
+  const DISPLACEMENT_FACTOR_X = 0.7;
+  const DISPLACEMENT_FACTOR_Y = 1;
+  const PADDING_Y = 50;
 
-  const displacementFactorX = 0.7;
-  const displacementFactorY = 1;
-  const paddingY = 50;
+  // Calculate quarter displacements based on screen dimensions
+  const horizontalDisplacementQuarter = Math.round((screenWidth / 4) * DISPLACEMENT_FACTOR_X);
+  const verticalDisplacementQuarter = Math.round((screenHeight / 4) * DISPLACEMENT_FACTOR_Y);
 
-  // Calculate the displacement 1/4 of the screen width and height
-  const horizontalDisplacement1_4 = Math.round(screenWidth / 4 * displacementFactorX);
-  const verticalDisplacement1_4 = Math.round(screenHeight / 4 * displacementFactorY);  
-
-  // Calculate the center of the screen
+  // Determine the center positions for the brand signature
   const centerX = (screenWidth - brandSignatureWidth) / 2;
   const centerY = (screenHeight - brandSignatureHeight) / 2;
 
-  const bottomY = screenHeight - (brandSignatureHeight + paddingY) ;
+  // Compute the bottom Y position with applied padding
+  const bottomY = screenHeight - (brandSignatureHeight + PADDING_Y);
 
+  // Define structured headline positions used for transformations
   const headlinePositions = {
     left: {
-      left: centerX - horizontalDisplacement1_4,
+      left: centerX - horizontalDisplacementQuarter,
       center: centerX,
-      right: centerX + horizontalDisplacement1_4
+      right: centerX + horizontalDisplacementQuarter
     },
     top: {
-      top: centerY - verticalDisplacement1_4,
+      top: centerY - verticalDisplacementQuarter,
       center: centerY,
-      bottom1_4: centerY + verticalDisplacement1_4,
+      bottom1_4: centerY + verticalDisplacementQuarter,
       bottom: bottomY
     }
-  }
+  };
+
 
   const logoTop = (navigationHeightMax - brandSignatureHeight) / 2;
 
@@ -74,7 +83,7 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
     },
     small: {
       headline: {
-        left: headlinePositions.left.left,
+        left: headlinePositions.left.center,
         top: headlinePositions.top.bottom1_4,
         scale: 1.3
       },
@@ -86,9 +95,9 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
     },
     tiny: {
       headline: {
-        left: headlinePositions.left.left,
+        left: headlinePositions.left.center,
         top: headlinePositions.top.bottom,
-        scale: 1
+        scale: 1.4
       },
       logo: {
         left: -rem(3),
