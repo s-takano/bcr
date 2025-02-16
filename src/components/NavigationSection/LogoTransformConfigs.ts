@@ -17,11 +17,12 @@ export type BrandSignatureTransformConfig = {
 
 const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, navigationHeightMax: number, brandSignatureWidth: number, brandSignatureHeight: number): Record<Breakpoint, BrandSignatureTransformConfig> => {
 
-  const displacementFactor = 0.7;
+  const displacementFactorX = 0.7;
+  const displacementFactorY = 1;
   
   // Calculate the displacement 1/4 of the screen width and height
-  const horizontalDisplacement = Math.round(screenWidth / 4 * displacementFactor);
-  const verticalDisplacement = Math.round(screenHeight / 4 * displacementFactor);  
+  const horizontalDisplacement = Math.round(screenWidth / 4 * displacementFactorX);
+  const verticalDisplacement = Math.round(screenHeight / 4 * displacementFactorY);  
 
   // Calculate the center of the screen
   const centerLeft = (screenWidth - brandSignatureWidth) / 2;
@@ -81,9 +82,9 @@ const getBrandSignatureTransforms = (screenHeight: number, screenWidth: number, 
     },
     tiny: {
       headline: {
-        left: headlinePositions.left.center,
+        left: headlinePositions.left.left,
         top: headlinePositions.top.bottom,
-        scale: 1.5
+        scale: 1
       },
       logo: {
         left: -rem(3),
