@@ -1,6 +1,3 @@
-import { useState } from 'react';
-import { HAMBURGER_ICON } from '../Icons/constants';
-
 interface SidebarMenuParams{
   menuOpen: boolean;
   setMenuOpen: (menuOpen: boolean) => void;

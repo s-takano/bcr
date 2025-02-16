@@ -173,7 +173,7 @@ const updateBrandSignatureTransform = (progress: number) => (dispatch: ThunkDisp
 export const slideBrandSignature = (
   scrollY: number | undefined,
 ) =>
-  (dispatch: ThunkDispatch<{ navigation: NavigationState; }, undefined, UnknownAction>, getState: () => RootState) => {
+  (dispatch: ThunkDispatch<{ navigation: NavigationState; }, undefined, UnknownAction>) => {
 
     const progress = getProgress(scrollY);
 
